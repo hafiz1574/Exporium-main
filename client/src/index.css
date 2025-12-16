@@ -9,5 +9,5 @@ body,
 }
 
 body {
-  @apply bg-black text-neutral-100;
+  @apply text-neutral-100;
 }
