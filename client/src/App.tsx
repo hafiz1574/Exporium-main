@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { Layout } from "./components/Layout";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Cart } from "./pages/Cart";
+import { Home } from "./pages/Home";
+import { Login } from "./pages/Login";
+import { NotFound } from "./pages/NotFound";
+import { ProductDetails } from "./pages/ProductDetails";
+import { Products } from "./pages/Products";
+import { Signup } from "./pages/Signup";
+import { Track } from "./pages/Track";
+import { Wishlist } from "./pages/Wishlist";
+import { AccountOrderDetails } from "./pages/account/OrderDetails";
+import { AccountOrders } from "./pages/account/Orders";
+import { AdminCustomers } from "./pages/admin/CustomersAdmin";
+import { AdminDashboard } from "./pages/admin/Dashboard";
+import { AdminOrders } from "./pages/admin/OrdersAdmin";
+import { AdminProducts } from "./pages/admin/ProductsAdmin";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
+import { fetchMe } from "./store/slices/authSlice";
+import { fetchWishlist } from "./store/slices/wishlistSlice";
+
+export default function App() {
+  const dispatch = useAppDispatch();
+  const { token, user } = useAppSelector((s) => s.auth);
+
+  useEffect(() => {
+    if (token && !user) dispatch(fetchMe());
+  }, [dispatch, token, user]);
+
+  useEffect(() => {
+    if (token) dispatch(fetchWishlist());
+  }, [dispatch, token]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/track" element={<Track />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
-export default App
+        <Route element={<ProtectedRoute role="customer" />}>
+          <Route path="/account/orders" element={<AccountOrders />} />
+          <Route path="/account/orders/:id" element={<AccountOrderDetails />} />
+        </Route>
+
+        <Route element={<ProtectedRoute role="admin" />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/products" element={<AdminProducts />} />
+          <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/admin/customers" element={<AdminCustomers />} />
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  );
+}

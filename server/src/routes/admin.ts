@@ -44,7 +44,7 @@ adminRouter.post(
       )
     );
 
-    res.json({ urls });
+    res.json(urls);
   })
 );
 

@@ -11,7 +11,7 @@ export function getStripe(): Stripe {
   }
 
   stripeSingleton = new Stripe(stripeSecretKey, {
-    apiVersion: "2024-06-20"
+    apiVersion: "2025-02-24.acacia"
   });
 
   return stripeSingleton;
