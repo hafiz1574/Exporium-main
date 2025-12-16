@@ -67,6 +67,48 @@ export function ProductDetails() {
 
         <p className="text-sm leading-6 text-neutral-300">{product.description}</p>
 
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-4">
+            <div className="text-sm font-medium text-white">Shipping</div>
+            <div className="mt-2 space-y-1 text-sm text-neutral-400">
+              <div>Typical route: China → Bangladesh (time varies by courier).</div>
+              <div>Tracking events show up after payment confirmation.</div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-4">
+            <div className="text-sm font-medium text-white">Returns & exchanges</div>
+            <div className="mt-2 space-y-1 text-sm text-neutral-400">
+              <div>Request within 7 days of delivery (unworn condition).</div>
+              <div>Keep the original box and packaging for eligibility.</div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-4">
+            <div className="text-sm font-medium text-white">Authenticity</div>
+            <div className="mt-2 space-y-1 text-sm text-neutral-400">
+              <div>Curated listings with clear brand/model details.</div>
+              <div>If something looks off, contact support immediately.</div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-4">
+            <div className="text-sm font-medium text-white">Payment</div>
+            <div className="mt-2 space-y-1 text-sm text-neutral-400">
+              <div>Secure Stripe Checkout.</div>
+              <div>You’ll receive an order and tracking ID after payment.</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-4">
+          <div className="text-sm font-medium text-white">How tracking works</div>
+          <div className="mt-2 text-sm text-neutral-400">
+            After checkout, Exporium creates your order and assigns a tracking ID. Use it on the Track page
+            to view shipment timeline updates (processing, dispatched, in transit, delivered).
+          </div>
+        </div>
+
         <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-4">
           <div className="text-sm font-medium text-white">Select size</div>
           <div className="mt-3 flex flex-wrap gap-2">

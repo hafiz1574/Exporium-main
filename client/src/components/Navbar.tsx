@@ -14,11 +14,18 @@ export function Navbar() {
   const { user } = useAppSelector((s) => s.auth);
   const cartCount = useAppSelector((s) => s.cart.items.reduce((sum, i) => sum + i.quantity, 0));
 
+  const facebookUrl = "https://www.facebook.com/profile.php?id=61583223486613";
+
   return (
     <header className="border-b border-neutral-800 bg-black">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <Link to="/" className="text-lg font-semibold tracking-wide">
-          EXPORIUM
+        <Link to="/" className="flex items-center gap-3">
+          <img
+            src="/logo.svg"
+            alt="Exporium"
+            className="h-10 w-10 rounded-full border border-neutral-800 bg-black"
+          />
+          <span className="text-lg font-semibold tracking-wide">EXPORIUM</span>
         </Link>
 
         <nav className="flex items-center gap-5">
@@ -34,6 +41,14 @@ export function Navbar() {
           <NavLink to="/track" className={navClass}>
             Track
           </NavLink>
+          <a
+            href={facebookUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm text-neutral-300 hover:text-white"
+          >
+            Facebook
+          </a>
 
           {user ? (
             <>

@@ -27,32 +27,82 @@ export function Home() {
 
   return (
     <div className="space-y-10">
-      <section className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-8">
-        <div className="max-w-2xl">
-          <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Luxury sneakers. Built for movement.
-          </h1>
-          <p className="mt-4 text-neutral-300">
-            Exporium is a premium sneaker store experience—fast browsing, wishlist, cart, Stripe Checkout,
-            and order tracking from China to Bangladesh.
+      <section className="relative overflow-hidden rounded-2xl border border-neutral-800 bg-black">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-900 via-black to-black" />
+        <div className="pointer-events-none absolute -top-24 right-[-120px] h-80 w-80 rounded-full bg-neutral-900/40 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 left-[-120px] h-80 w-80 rounded-full bg-neutral-900/30 blur-3xl" />
+
+        <div className="relative p-8 sm:p-10">
+          <div className="inline-flex items-center gap-2 rounded-full border border-neutral-800 bg-black/40 px-3 py-1 text-xs text-neutral-300">
+            Premium sneakers • Worldwide sourcing
+          </div>
+
+          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-5xl">Exporium</h1>
+          <p className="mt-3 max-w-2xl text-neutral-300">
+            Find authentic, premium sneakers with simple checkout, wishlist, and clear order tracking.
           </p>
-          <div className="mt-6 flex gap-3">
+
+          <div className="mt-6 flex flex-wrap gap-3">
             <Link
               to="/products"
-              className="rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:bg-neutral-200"
+              className="rounded-xl bg-white px-5 py-2.5 text-sm font-medium text-black hover:bg-neutral-200"
             >
               Shop now
             </Link>
             <Link
               to="/track"
-              className="rounded-md border border-neutral-700 px-4 py-2 text-sm font-medium text-white hover:border-neutral-500"
+              className="rounded-xl border border-neutral-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-neutral-900"
             >
               Track order
             </Link>
           </div>
+
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl border border-neutral-800 bg-neutral-950/60 p-5">
+              <div className="text-sm font-medium text-white">Authenticity first</div>
+              <div className="mt-1 text-xs text-neutral-400">Curated pairs with clear product details.</div>
+            </div>
+            <div className="rounded-2xl border border-neutral-800 bg-neutral-950/60 p-5">
+              <div className="text-sm font-medium text-white">Fast checkout</div>
+              <div className="mt-1 text-xs text-neutral-400">Secure Stripe hosted checkout.</div>
+            </div>
+            <div className="rounded-2xl border border-neutral-800 bg-neutral-950/60 p-5">
+              <div className="text-sm font-medium text-white">Order tracking</div>
+              <div className="mt-1 text-xs text-neutral-400">Timeline updates from payment to delivery.</div>
+            </div>
+          </div>
         </div>
       </section>
 
+      <section className="grid gap-4 sm:grid-cols-3">
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-6">
+          <div className="text-white">New drops</div>
+          <div className="mt-2 text-sm text-neutral-400">Fresh arrivals and limited pairs.</div>
+          <div className="mt-4">
+            <Link to="/products" className="text-sm text-white hover:underline">
+              Explore products →
+            </Link>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-6">
+          <div className="text-white">Wishlist</div>
+          <div className="mt-2 text-sm text-neutral-400">Save favorites and buy later.</div>
+          <div className="mt-4">
+            <Link to="/wishlist" className="text-sm text-white hover:underline">
+              View wishlist →
+            </Link>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-6">
+          <div className="text-white">Need tracking?</div>
+          <div className="mt-2 text-sm text-neutral-400">Use your tracking ID to see shipment events.</div>
+          <div className="mt-4">
+            <Link to="/track" className="text-sm text-white hover:underline">
+              Track an order →
+            </Link>
+          </div>
+        </div>
+      </section>
       <section>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-white">Newest drops</h2>
