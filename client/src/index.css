@@ -11,3 +11,10 @@ body,
 body {
   @apply text-neutral-100;
 }
+
+/* Product cards: make Swiper fill the square image box */
+.product-card-swiper,
+.product-card-swiper .swiper-wrapper,
+.product-card-swiper .swiper-slide {
+  height: 100%;
+}

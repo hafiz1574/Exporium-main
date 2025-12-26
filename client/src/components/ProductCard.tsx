@@ -30,9 +30,9 @@ export function ProductCard({ product }: Props) {
     >
       <div className="aspect-square overflow-hidden rounded-md border border-neutral-900 bg-neutral-900">
         {hasImages ? (
-          <div onClickCapture={handleCarouselClickCapture}>
+          <div className="h-full" onClickCapture={handleCarouselClickCapture}>
             <Swiper
-              className="h-full"
+              className="product-card-swiper h-full"
               spaceBetween={0}
               slidesPerView={1}
               loop={canSlide}
