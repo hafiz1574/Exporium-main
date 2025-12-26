@@ -32,6 +32,7 @@ export function ProductCard({ product }: Props) {
         {hasImages ? (
           <div onClickCapture={handleCarouselClickCapture}>
             <Swiper
+              className="h-full"
               spaceBetween={0}
               slidesPerView={1}
               loop={canSlide}
@@ -47,7 +48,7 @@ export function ProductCard({ product }: Props) {
               }}
             >
               {product.images.map((src) => (
-                <SwiperSlide key={src}>
+                <SwiperSlide key={src} className="h-full">
                   <img
                     src={src}
                     alt={product.name}
