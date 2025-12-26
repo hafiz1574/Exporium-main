@@ -1,6 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import type { SignOptions } from "jsonwebtoken";
 import { z } from "zod";
 
 import { User } from "../models/User";
@@ -12,7 +13,9 @@ export const authRouter = Router();
 function signToken(userId: string) {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error("Missing JWT_SECRET");
-  return jwt.sign({ userId }, secret, { expiresIn: "30d" });
+  const expiresInEnv = process.env.JWT_EXPIRES_IN;
+  const expiresIn: SignOptions["expiresIn"] = expiresInEnv ? (expiresInEnv as any) : "30d";
+  return jwt.sign({ userId }, secret, { expiresIn });
 }
 
 const registerSchema = z.object({

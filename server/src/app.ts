@@ -13,11 +13,23 @@ import { stripeWebhooksRouter } from "./routes/webhooks";
 
 export const app = express();
 
-const clientUrl = process.env.CLIENT_URL;
+const clientUrl = process.env.CLIENT_URL ?? process.env.CORS_ORIGINS;
+
+function parseCorsOrigin(input?: string) {
+  if (!input) return true;
+  const trimmed = input.trim();
+  if (!trimmed) return true;
+  if (trimmed === "*") return true;
+  const parts = trimmed
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return parts.length <= 1 ? (parts[0] ?? true) : parts;
+}
 
 app.use(
   cors({
-    origin: clientUrl || true,
+    origin: parseCorsOrigin(clientUrl),
     credentials: true,
     allowedHeaders: [
       "Content-Type",
@@ -29,7 +41,15 @@ app.use(
   })
 );
 
+app.get("/", (_req: Request, res: Response) => {
+  res.json({ ok: true, service: "exporium-api", health: "/health" });
+});
+
 app.get("/health", (_req: Request, res: Response) => {
+  res.json({ ok: true });
+});
+
+app.get("/healthz", (_req: Request, res: Response) => {
   res.json({ ok: true });
 });
 

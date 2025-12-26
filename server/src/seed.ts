@@ -19,8 +19,8 @@ const placeholderSets: string[][] = [
 ];
 
 async function run() {
-  const mongoUri = process.env.MONGO_URI;
-  if (!mongoUri) throw new Error("Missing MONGO_URI");
+  const mongoUri = process.env.MONGO_URI ?? process.env.DATABASE_URL;
+  if (!mongoUri) throw new Error("Missing MONGO_URI (or DATABASE_URL)");
 
   await mongoose.connect(mongoUri);
 
