@@ -21,6 +21,8 @@ export function ProductDetails() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [size, setSize] = useState<string>("");
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [swiperInstance, setSwiperInstance] = useState<any>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -48,14 +50,45 @@ export function ProductDetails() {
 
   return (
     <div className="grid gap-8 lg:grid-cols-2">
-      <div className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950/40">
-        <Swiper spaceBetween={12} slidesPerView={1}>
-          {product.images.map((src) => (
+      <div className="self-start overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950/40">
+        <Swiper
+          spaceBetween={12}
+          slidesPerView={1}
+          onSwiper={(s) => setSwiperInstance(s)}
+          onSlideChange={(s) => setActiveImageIndex((s as any).realIndex ?? (s as any).activeIndex ?? 0)}
+        >
+          {(product.images ?? []).map((src) => (
             <SwiperSlide key={src}>
               <img src={src} alt={product.name} className="h-[420px] w-full object-cover" />
             </SwiperSlide>
           ))}
         </Swiper>
+
+        {product.images?.length ? (
+          <div className="border-t border-neutral-800 p-3">
+            <div className="flex gap-2 overflow-x-auto">
+              {product.images.map((src, idx) => {
+                const isActive = idx === activeImageIndex;
+                return (
+                  <button
+                    key={`${src}-${idx}`}
+                    type="button"
+                    onClick={() => {
+                      setActiveImageIndex(idx);
+                      swiperInstance?.slideTo?.(idx);
+                    }}
+                    className={`h-14 w-14 flex-none overflow-hidden rounded-md border bg-black ${
+                      isActive ? "border-neutral-300" : "border-neutral-800 hover:border-neutral-600"
+                    }`}
+                    aria-label={`View image ${idx + 1}`}
+                  >
+                    <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <div className="space-y-4">
