@@ -22,6 +22,7 @@ export function AdminProducts() {
   const [form, setForm] = useState<FormState>(emptyForm);
   const [files, setFiles] = useState<FileList | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const formId = useMemo(() => `admin-product-form-${Math.random().toString(36).slice(2)}`, []);
 
   async function loadProducts() {
     setLoading(true);
@@ -98,62 +99,107 @@ export function AdminProducts() {
           <div className="text-sm font-medium text-white">{form._id ? "Edit" : "Create"} product</div>
 
           <div className="mt-4 grid gap-3">
-            <input
-              value={form.name}
-              onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
-              placeholder="Name"
-              className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
-            />
-            <input
-              value={form.brand}
-              onChange={(e) => setForm((p) => ({ ...p, brand: e.target.value }))}
-              placeholder="Brand"
-              className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
-            />
-            <input
-              value={form.category}
-              onChange={(e) => setForm((p) => ({ ...p, category: e.target.value }))}
-              placeholder="Category"
-              className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
-            />
-            <textarea
-              value={form.description}
-              onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
-              placeholder="Description"
-              className="min-h-28 rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
-            />
-
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-1">
+              <label htmlFor={`${formId}-name`} className="text-xs text-neutral-400">
+                Product name
+              </label>
               <input
-                value={form.price}
-                onChange={(e) => setForm((p) => ({ ...p, price: Number(e.target.value) }))}
-                placeholder="Price"
-                type="number"
-                className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
-              />
-              <input
-                value={form.stock}
-                onChange={(e) => setForm((p) => ({ ...p, stock: Number(e.target.value) }))}
-                placeholder="Stock"
-                type="number"
+                id={`${formId}-name`}
+                value={form.name}
+                onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+                placeholder="Name"
                 className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
               />
             </div>
 
-            <input
-              value={form.sizes.join(",")}
-              onChange={(e) =>
-                setForm((p) => ({
-                  ...p,
-                  sizes: e.target.value
-                    .split(",")
-                    .map((s) => s.trim())
-                    .filter(Boolean)
-                }))
-              }
-              placeholder="Sizes (comma separated)"
-              className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
-            />
+            <div className="grid gap-1">
+              <label htmlFor={`${formId}-brand`} className="text-xs text-neutral-400">
+                Brand
+              </label>
+              <input
+                id={`${formId}-brand`}
+                value={form.brand}
+                onChange={(e) => setForm((p) => ({ ...p, brand: e.target.value }))}
+                placeholder="Brand"
+                className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div className="grid gap-1">
+              <label htmlFor={`${formId}-category`} className="text-xs text-neutral-400">
+                Category
+              </label>
+              <input
+                id={`${formId}-category`}
+                value={form.category}
+                onChange={(e) => setForm((p) => ({ ...p, category: e.target.value }))}
+                placeholder="Category"
+                className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div className="grid gap-1">
+              <label htmlFor={`${formId}-description`} className="text-xs text-neutral-400">
+                Description
+              </label>
+              <textarea
+                id={`${formId}-description`}
+                value={form.description}
+                onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
+                placeholder="Description"
+                className="min-h-28 rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="grid gap-1">
+                <label htmlFor={`${formId}-price`} className="text-xs text-neutral-400">
+                  Price
+                </label>
+                <input
+                  id={`${formId}-price`}
+                  value={form.price}
+                  onChange={(e) => setForm((p) => ({ ...p, price: Number(e.target.value) }))}
+                  placeholder="Price"
+                  type="number"
+                  className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+                />
+              </div>
+              <div className="grid gap-1">
+                <label htmlFor={`${formId}-stock`} className="text-xs text-neutral-400">
+                  Stock
+                </label>
+                <input
+                  id={`${formId}-stock`}
+                  value={form.stock}
+                  onChange={(e) => setForm((p) => ({ ...p, stock: Number(e.target.value) }))}
+                  placeholder="Stock"
+                  type="number"
+                  className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-1">
+              <label htmlFor={`${formId}-sizes`} className="text-xs text-neutral-400">
+                Sizes (comma separated)
+              </label>
+              <input
+                id={`${formId}-sizes`}
+                value={form.sizes.join(",")}
+                onChange={(e) =>
+                  setForm((p) => ({
+                    ...p,
+                    sizes: e.target.value
+                      .split(",")
+                      .map((s) => s.trim())
+                      .filter(Boolean)
+                  }))
+                }
+                placeholder="Sizes (comma separated)"
+                className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+              />
+            </div>
 
             <div className="rounded-md border border-neutral-800 bg-black p-3">
               <div className="text-xs text-neutral-400">Images</div>
@@ -173,7 +219,12 @@ export function AdminProducts() {
               </div>
 
               <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-                <input type="file" multiple onChange={(e) => setFiles(e.target.files)} />
+                <div className="grid gap-1">
+                  <label htmlFor={`${formId}-images`} className="text-xs text-neutral-400">
+                    Choose image files
+                  </label>
+                  <input id={`${formId}-images`} type="file" multiple onChange={(e) => setFiles(e.target.files)} />
+                </div>
                 <button
                   type="button"
                   onClick={uploadImages}
