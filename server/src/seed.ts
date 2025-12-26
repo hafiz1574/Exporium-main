@@ -27,16 +27,20 @@ async function run() {
   const adminEmail = process.env.SEED_ADMIN_EMAIL || "admin@exporium.com";
   const adminPassword = process.env.SEED_ADMIN_PASSWORD || "Admin12345!";
 
-  const existingAdmin = await User.findOne({ email: adminEmail.toLowerCase() });
-  if (!existingAdmin) {
-    const passwordHash = await bcrypt.hash(adminPassword, 10);
-    await User.create({
-      name: "Exporium Admin",
-      email: adminEmail.toLowerCase(),
-      passwordHash,
-      role: "admin"
-    });
-  }
+  const adminEmailLower = adminEmail.toLowerCase();
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
+  await User.findOneAndUpdate(
+    { email: adminEmailLower },
+    {
+      $set: {
+        name: "Exporium Admin",
+        email: adminEmailLower,
+        passwordHash,
+        role: "admin"
+      }
+    },
+    { upsert: true, new: true }
+  );
 
   const productCount = await Product.countDocuments();
   if (productCount < 8) {
