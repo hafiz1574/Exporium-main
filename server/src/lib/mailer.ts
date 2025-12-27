@@ -23,6 +23,7 @@ function getSmtpConfig() {
 
 export async function sendEmail({ to, subject, text, html }: SendEmailParams) {
   const from = process.env.EMAIL_FROM || process.env.SMTP_FROM || "no-reply@exporium";
+  const replyTo = process.env.EMAIL_REPLY_TO || process.env.REPLY_TO;
 
   const smtp = getSmtpConfig();
   if (!smtp) {
@@ -43,6 +44,7 @@ export async function sendEmail({ to, subject, text, html }: SendEmailParams) {
 
   await transporter.sendMail({
     from,
+    replyTo,
     to,
     subject,
     text,
