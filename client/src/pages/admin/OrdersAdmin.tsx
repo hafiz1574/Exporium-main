@@ -44,10 +44,10 @@ export function AdminOrders() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold text-white">Admin orders</h1>
+      <h1 className="text-xl font-semibold text-neutral-900 dark:text-white">Admin orders</h1>
 
       {loading ? (
-        <div className="text-sm text-neutral-400">Loading…</div>
+        <div className="text-sm text-neutral-600 dark:text-neutral-400">Loading…</div>
       ) : (
         <div className="space-y-3">
           {orders.map((o) => (
@@ -79,24 +79,24 @@ function OrderRow({
   const [location, setLocation] = useState("China");
 
   return (
-    <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-4">
+    <div className="rounded-xl border border-neutral-200 bg-white/70 p-4 dark:border-neutral-800 dark:bg-neutral-950/40">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="text-sm text-neutral-400">{new Date(order.createdAt).toLocaleString()}</div>
-          <div className="mt-1 text-sm text-white font-medium">Order {order._id}</div>
+          <div className="text-sm text-neutral-600 dark:text-neutral-400">{new Date(order.createdAt).toLocaleString()}</div>
+          <div className="mt-1 text-sm text-neutral-900 font-medium dark:text-white">Order {order._id}</div>
           <div className="mt-1 text-xs text-neutral-500">Tracking: {order.trackingId}</div>
         </div>
-        <div className="text-sm text-neutral-300">Status: {order.status}</div>
+        <div className="text-sm text-neutral-700 dark:text-neutral-300">Status: {order.status}</div>
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
-        <div className="rounded-lg border border-neutral-800 bg-black p-3">
-          <div className="text-sm font-medium text-white">Update status</div>
+        <div className="rounded-lg border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-black">
+          <div className="text-sm font-medium text-neutral-900 dark:text-white">Update status</div>
           <div className="mt-2 flex gap-2">
             <select
               value={nextStatus}
               onChange={(e) => setNextStatus(e.target.value as OrderStatus)}
-              className="flex-1 rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+              className="flex-1 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
             >
               {statuses.map((s) => (
                 <option key={s} value={s}>
@@ -105,7 +105,7 @@ function OrderRow({
               ))}
             </select>
             <button
-              className="rounded-md bg-white px-3 py-2 text-sm font-medium text-black hover:bg-neutral-200"
+              className="rounded-md bg-black px-3 py-2 text-sm font-medium text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
               onClick={() => onStatus(order._id, nextStatus)}
             >
               Save
@@ -113,13 +113,13 @@ function OrderRow({
           </div>
         </div>
 
-        <div className="rounded-lg border border-neutral-800 bg-black p-3">
-          <div className="text-sm font-medium text-white">Add tracking event</div>
+        <div className="rounded-lg border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-black">
+          <div className="text-sm font-medium text-neutral-900 dark:text-white">Add tracking event</div>
           <div className="mt-2 grid gap-2">
             <select
               value={eventStatus}
               onChange={(e) => setEventStatus(e.target.value as OrderStatus)}
-              className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+              className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
             >
               {statuses.map((s) => (
                 <option key={s} value={s}>
@@ -130,17 +130,17 @@ function OrderRow({
             <input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+              className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
               placeholder="Message"
             />
             <input
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+              className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
               placeholder="Location"
             />
             <button
-              className="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:border-neutral-500"
+              className="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-900 hover:border-neutral-400 dark:border-neutral-700 dark:text-white dark:hover:border-neutral-500"
               onClick={() => onAddEvent(order._id, eventStatus, message, location || undefined)}
             >
               Add

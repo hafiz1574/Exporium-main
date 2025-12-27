@@ -37,17 +37,17 @@ export function Cart() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold text-white">Cart</h1>
+      <h1 className="text-xl font-semibold text-neutral-900 dark:text-white">Cart</h1>
 
       {items.length === 0 ? (
-        <div className="text-sm text-neutral-400">Your cart is empty.</div>
+        <div className="text-sm text-neutral-600 dark:text-neutral-400">Your cart is empty.</div>
       ) : (
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-3">
             {items.map((item) => (
               <div
                 key={`${item.productId}:${item.size ?? ""}`}
-                className="flex gap-4 rounded-xl border border-neutral-800 bg-neutral-950/40 p-4"
+                className="flex gap-4 rounded-xl border border-neutral-200 bg-white/70 p-4 dark:border-neutral-800 dark:bg-neutral-950/40"
               >
                 <img
                   src={item.image}
@@ -55,11 +55,11 @@ export function Cart() {
                   className="h-20 w-20 rounded-md object-cover"
                 />
                 <div className="flex-1">
-                  <div className="font-medium text-white">{item.name}</div>
-                  <div className="mt-1 text-sm text-neutral-400">
+                  <div className="font-medium text-neutral-900 dark:text-white">{item.name}</div>
+                  <div className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
                     {item.size ? `Size: ${item.size}` : ""}
                   </div>
-                  <div className="mt-2 text-sm text-neutral-200">{formatMoney(item.price)}</div>
+                  <div className="mt-2 text-sm text-neutral-800 dark:text-neutral-200">{formatMoney(item.price)}</div>
                 </div>
 
                 <div className="flex flex-col items-end gap-2">
@@ -76,10 +76,10 @@ export function Cart() {
                         })
                       )
                     }
-                    className="w-20 rounded-md border border-neutral-800 bg-black px-2 py-1 text-sm"
+                    className="w-20 rounded-md border border-neutral-300 bg-white px-2 py-1 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
                   />
                   <button
-                    className="text-sm text-neutral-300 hover:text-white"
+                    className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
                     onClick={() => dispatch(removeFromCart({ productId: item.productId, size: item.size }))}
                   >
                     Remove
@@ -89,15 +89,15 @@ export function Cart() {
             ))}
           </div>
 
-          <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-4 h-fit">
-            <div className="flex items-center justify-between text-sm text-neutral-300">
+          <div className="rounded-xl border border-neutral-200 bg-white/70 p-4 h-fit dark:border-neutral-800 dark:bg-neutral-950/40">
+            <div className="flex items-center justify-between text-sm text-neutral-700 dark:text-neutral-300">
               <span>Total</span>
-              <span className="text-white font-semibold">{formatMoney(total)}</span>
+              <span className="text-neutral-900 font-semibold dark:text-white">{formatMoney(total)}</span>
             </div>
             <button
               disabled={loading}
               onClick={checkout}
-              className="mt-4 w-full rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:bg-neutral-200 disabled:opacity-60"
+              className="mt-4 w-full rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
             >
               {loading ? "Redirecting…" : "Checkout"}
             </button>

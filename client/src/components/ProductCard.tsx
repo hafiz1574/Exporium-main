@@ -26,9 +26,9 @@ export function ProductCard({ product }: Props) {
   return (
     <Link
       to={`/products/${product._id}`}
-      className="group rounded-lg border border-neutral-800 bg-neutral-950/40 p-3 hover:border-neutral-700"
+      className="group rounded-lg border border-neutral-200 bg-white/70 p-3 hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-950/40 dark:hover:border-neutral-700"
     >
-      <div className="aspect-square overflow-hidden rounded-md border border-neutral-900 bg-neutral-900">
+      <div className="aspect-square overflow-hidden rounded-md border border-neutral-200 bg-neutral-100 dark:border-neutral-900 dark:bg-neutral-900">
         {hasImages ? (
           <div className="h-full" onClickCapture={handleCarouselClickCapture}>
             <Swiper
@@ -64,9 +64,9 @@ export function ProductCard({ product }: Props) {
         )}
       </div>
       <div className="mt-3">
-        <div className="text-sm text-neutral-400">{product.brand}</div>
-        <div className="mt-1 font-medium text-white">{product.name}</div>
-        <div className="mt-2 text-sm text-neutral-200">{formatMoney(product.price)}</div>
+        <div className="text-sm text-neutral-600 dark:text-neutral-400">{product.brand}</div>
+        <div className="mt-1 font-medium text-neutral-900 dark:text-white">{product.name}</div>
+        <div className="mt-2 text-sm text-neutral-800 dark:text-neutral-200">{formatMoney(product.price)}</div>
       </div>
     </Link>
   );

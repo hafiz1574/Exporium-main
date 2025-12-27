@@ -129,16 +129,16 @@ export function AdminProducts() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-white">Admin products</h1>
+        <h1 className="text-xl font-semibold text-neutral-900 dark:text-white">Admin products</h1>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-4">
-          <div className="text-sm font-medium text-white">{form._id ? "Edit" : "Create"} product</div>
+        <div className="rounded-xl border border-neutral-200 bg-white/70 p-4 dark:border-neutral-800 dark:bg-neutral-950/40">
+          <div className="text-sm font-medium text-neutral-900 dark:text-white">{form._id ? "Edit" : "Create"} product</div>
 
           <div className="mt-4 grid gap-3">
             <div className="grid gap-1">
-              <label htmlFor={`${formId}-name`} className="text-xs text-neutral-400">
+              <label htmlFor={`${formId}-name`} className="text-xs text-neutral-600 dark:text-neutral-400">
                 Product name
               </label>
               <input
@@ -146,12 +146,12 @@ export function AdminProducts() {
                 value={form.name}
                 onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
                 placeholder="Name"
-                className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+                className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
               />
             </div>
 
             <div className="grid gap-1">
-              <label htmlFor={`${formId}-brand`} className="text-xs text-neutral-400">
+              <label htmlFor={`${formId}-brand`} className="text-xs text-neutral-600 dark:text-neutral-400">
                 Brand
               </label>
               <input
@@ -159,12 +159,12 @@ export function AdminProducts() {
                 value={form.brand}
                 onChange={(e) => setForm((p) => ({ ...p, brand: e.target.value }))}
                 placeholder="Brand"
-                className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+                className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
               />
             </div>
 
             <div className="grid gap-1">
-              <label htmlFor={`${formId}-category`} className="text-xs text-neutral-400">
+              <label htmlFor={`${formId}-category`} className="text-xs text-neutral-600 dark:text-neutral-400">
                 Category
               </label>
               <input
@@ -172,12 +172,12 @@ export function AdminProducts() {
                 value={form.category}
                 onChange={(e) => setForm((p) => ({ ...p, category: e.target.value }))}
                 placeholder="Category"
-                className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+                className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
               />
             </div>
 
             <div className="grid gap-1">
-              <label htmlFor={`${formId}-description`} className="text-xs text-neutral-400">
+              <label htmlFor={`${formId}-description`} className="text-xs text-neutral-600 dark:text-neutral-400">
                 Description
               </label>
               <textarea
@@ -185,13 +185,13 @@ export function AdminProducts() {
                 value={form.description}
                 onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
                 placeholder="Description"
-                className="min-h-28 rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+                className="min-h-28 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-1">
-                <label htmlFor={`${formId}-price`} className="text-xs text-neutral-400">
+                <label htmlFor={`${formId}-price`} className="text-xs text-neutral-600 dark:text-neutral-400">
                   Price
                 </label>
                 <input
@@ -200,11 +200,11 @@ export function AdminProducts() {
                   onChange={(e) => setForm((p) => ({ ...p, price: Number(e.target.value) }))}
                   placeholder="Price"
                   type="number"
-                  className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+                  className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
                 />
               </div>
               <div className="grid gap-1">
-                <label htmlFor={`${formId}-stock`} className="text-xs text-neutral-400">
+                <label htmlFor={`${formId}-stock`} className="text-xs text-neutral-600 dark:text-neutral-400">
                   Stock
                 </label>
                 <input
@@ -213,13 +213,13 @@ export function AdminProducts() {
                   onChange={(e) => setForm((p) => ({ ...p, stock: Number(e.target.value) }))}
                   placeholder="Stock"
                   type="number"
-                  className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+                  className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
                 />
               </div>
             </div>
 
             <div className="grid gap-1">
-              <label htmlFor={`${formId}-sizes`} className="text-xs text-neutral-400">
+              <label htmlFor={`${formId}-sizes`} className="text-xs text-neutral-600 dark:text-neutral-400">
                 Sizes (comma separated)
               </label>
               <input
@@ -235,18 +235,18 @@ export function AdminProducts() {
                   }))
                 }
                 placeholder="Sizes (comma separated)"
-                className="rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm"
+                className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
               />
             </div>
 
-            <div className="rounded-md border border-neutral-800 bg-black p-3">
-              <div className="text-xs text-neutral-400">Images</div>
+            <div className="rounded-md border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-black">
+              <div className="text-xs text-neutral-600 dark:text-neutral-400">Images</div>
               <div className="mt-2 flex flex-wrap gap-2">
                 {form.images.map((url) => (
                   <div key={url} className="relative">
                     <img src={url} alt="" className="h-16 w-16 rounded object-cover" />
                     <button
-                      className="absolute -right-2 -top-2 rounded-full border border-neutral-700 bg-black px-2 text-xs"
+                      className="absolute -right-2 -top-2 rounded-full border border-neutral-300 bg-white px-2 text-xs text-neutral-900 dark:border-neutral-700 dark:bg-black dark:text-white"
                       onClick={() => setForm((p) => ({ ...p, images: p.images.filter((u) => u !== url) }))}
                       type="button"
                     >
@@ -258,7 +258,7 @@ export function AdminProducts() {
 
               <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
                 <div className="grid gap-1">
-                  <label htmlFor={`${formId}-images`} className="text-xs text-neutral-400">
+                  <label htmlFor={`${formId}-images`} className="text-xs text-neutral-600 dark:text-neutral-400">
                     Choose image files
                   </label>
                   <input id={`${formId}-images`} type="file" multiple onChange={(e) => setFiles(e.target.files)} />
@@ -266,27 +266,27 @@ export function AdminProducts() {
                 <button
                   type="button"
                   onClick={uploadImages}
-                  className="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:border-neutral-500"
+                  className="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-900 hover:border-neutral-400 dark:border-neutral-700 dark:text-white dark:hover:border-neutral-500"
                 >
                   Upload
                 </button>
               </div>
             </div>
 
-            {message ? <div className="text-sm text-neutral-300">{message}</div> : null}
+            {message ? <div className="text-sm text-neutral-700 dark:text-neutral-300">{message}</div> : null}
 
             <div className="flex gap-2">
               <button
                 disabled={!canSave}
                 onClick={save}
-                className="rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:bg-neutral-200 disabled:opacity-60"
+                className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
               >
                 Save
               </button>
               <button
                 type="button"
                 onClick={() => setForm(emptyForm)}
-                className="rounded-md border border-neutral-700 px-4 py-2 text-sm hover:border-neutral-500"
+                className="rounded-md border border-neutral-300 px-4 py-2 text-sm text-neutral-900 hover:border-neutral-400 dark:border-neutral-700 dark:text-white dark:hover:border-neutral-500"
               >
                 Clear
               </button>
@@ -295,29 +295,32 @@ export function AdminProducts() {
         </div>
 
         <div>
-          <div className="mb-3 text-sm font-medium text-white">All products</div>
+          <div className="mb-3 text-sm font-medium text-neutral-900 dark:text-white">All products</div>
           {loading ? (
-            <div className="text-sm text-neutral-400">Loading…</div>
+            <div className="text-sm text-neutral-600 dark:text-neutral-400">Loading…</div>
           ) : (
             <div className="space-y-3">
               {products.map((p) => (
-                <div key={p._id} className="flex items-center justify-between rounded-xl border border-neutral-800 bg-neutral-950/40 p-3">
+                <div
+                  key={p._id}
+                  className="flex items-center justify-between rounded-xl border border-neutral-200 bg-white/70 p-3 dark:border-neutral-800 dark:bg-neutral-950/40"
+                >
                   <div className="flex items-center gap-3">
                     <img src={p.images?.[0]} alt={p.name} className="h-12 w-12 rounded object-cover" />
                     <div>
-                      <div className="text-sm text-white">{p.name}</div>
+                      <div className="text-sm text-neutral-900 dark:text-white">{p.name}</div>
                       <div className="text-xs text-neutral-500">{p.category}</div>
                     </div>
                   </div>
                   <div className="flex gap-2">
                     <button
-                      className="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:border-neutral-500"
+                      className="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-900 hover:border-neutral-400 dark:border-neutral-700 dark:text-white dark:hover:border-neutral-500"
                       onClick={() => setForm({ ...p })}
                     >
                       Edit
                     </button>
                     <button
-                      className="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:border-neutral-500"
+                      className="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-900 hover:border-neutral-400 dark:border-neutral-700 dark:text-white dark:hover:border-neutral-500"
                       onClick={() => remove(p._id)}
                     >
                       Delete

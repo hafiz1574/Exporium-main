@@ -26,35 +26,35 @@ export function Signup() {
   }
 
   return (
-    <div className="mx-auto max-w-md rounded-xl border border-neutral-800 bg-neutral-950/40 p-6">
-      <h1 className="text-xl font-semibold text-white">Sign up</h1>
+    <div className="mx-auto max-w-md rounded-xl border border-neutral-200 bg-white/70 p-6 dark:border-neutral-800 dark:bg-neutral-950/40">
+      <h1 className="text-xl font-semibold text-neutral-900 dark:text-white">Sign up</h1>
 
       <form className="mt-6 space-y-4" onSubmit={onSubmit}>
         <div>
-          <label className="text-xs text-neutral-400">Name</label>
+          <label className="text-xs text-neutral-600 dark:text-neutral-400">Name</label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm text-white"
+            className="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
             required
           />
         </div>
         <div>
-          <label className="text-xs text-neutral-400">Email</label>
+          <label className="text-xs text-neutral-600 dark:text-neutral-400">Email</label>
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm text-white"
+            className="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
             type="email"
             required
           />
         </div>
         <div>
-          <label className="text-xs text-neutral-400">Password</label>
+          <label className="text-xs text-neutral-600 dark:text-neutral-400">Password</label>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-800 bg-black px-3 py-2 text-sm text-white"
+            className="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
             type="password"
             required
           />
@@ -64,13 +64,13 @@ export function Signup() {
 
         <button
           disabled={status === "loading"}
-          className="w-full rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:bg-neutral-200 disabled:opacity-60"
+          className="w-full rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
         >
           {status === "loading" ? "Creating…" : "Create account"}
         </button>
 
-        <div className="text-sm text-neutral-400">
-          Already have an account? <Link to="/login" className="text-white underline">Login</Link>
+        <div className="text-sm text-neutral-600 dark:text-neutral-400">
+          Already have an account? <Link to="/login" className="text-neutral-900 underline dark:text-white">Login</Link>
         </div>
       </form>
     </div>

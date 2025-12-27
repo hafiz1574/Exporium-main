@@ -27,25 +27,25 @@ export function AccountOrders() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-semibold text-white">My orders</h1>
+      <h1 className="text-xl font-semibold text-neutral-900 dark:text-white">My orders</h1>
 
       {loading ? (
-        <div className="text-sm text-neutral-400">Loading…</div>
+        <div className="text-sm text-neutral-600 dark:text-neutral-400">Loading…</div>
       ) : orders.length === 0 ? (
-        <div className="text-sm text-neutral-400">No orders yet.</div>
+        <div className="text-sm text-neutral-600 dark:text-neutral-400">No orders yet.</div>
       ) : (
         <div className="space-y-3">
           {orders.map((o) => (
             <Link
               key={o._id}
               to={`/account/orders/${o._id}`}
-              className="block rounded-xl border border-neutral-800 bg-neutral-950/40 p-4 hover:border-neutral-700"
+              className="block rounded-xl border border-neutral-200 bg-white/70 p-4 hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-950/40 dark:hover:border-neutral-700"
             >
               <div className="flex items-center justify-between">
-                <div className="text-sm text-neutral-400">{new Date(o.createdAt).toLocaleString()}</div>
-                <div className="text-sm text-white font-medium">{formatMoney(o.amountTotal)}</div>
+                <div className="text-sm text-neutral-600 dark:text-neutral-400">{new Date(o.createdAt).toLocaleString()}</div>
+                <div className="text-sm text-neutral-900 font-medium dark:text-white">{formatMoney(o.amountTotal)}</div>
               </div>
-              <div className="mt-2 text-sm text-neutral-300">Status: {o.status}</div>
+              <div className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">Status: {o.status}</div>
               <div className="mt-1 text-xs text-neutral-500">Tracking: {o.trackingId}</div>
             </Link>
           ))}
