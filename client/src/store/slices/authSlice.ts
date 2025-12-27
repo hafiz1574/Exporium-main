@@ -54,7 +54,9 @@ export const resendVerification = createAsyncThunk(
       const { data } = await api.post("/api/auth/resend-verification", payload);
       return data as { message: string };
     } catch (err: any) {
-      return rejectWithValue(err?.response?.data?.error ?? "Failed to resend verification email");
+      return rejectWithValue(
+        err?.response?.data?.error ?? err?.message ?? "Failed to resend verification email"
+      );
     }
   }
 );
