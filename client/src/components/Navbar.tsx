@@ -21,7 +21,7 @@ export function Navbar() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Link to="/" className="flex items-center gap-3">
           <img
-            src="/logo.svg"
+            src="/logo.png"
             alt="Exporium"
             className="h-10 w-10 rounded-full border border-neutral-800 bg-black"
           />
