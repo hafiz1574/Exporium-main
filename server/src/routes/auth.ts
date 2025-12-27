@@ -95,7 +95,7 @@ authRouter.post(
     const ok = await bcrypt.compare(password, user.passwordHash);
     if (!ok) return res.status(401).json({ error: "Invalid credentials" });
 
-    if (!user.emailVerified) {
+    if (!user.emailVerified && user.role !== "admin") {
       return res
         .status(403)
         .json({ error: "Email not verified", code: "EMAIL_NOT_VERIFIED", email: user.email });
