@@ -1,4 +1,6 @@
-export type UserRole = "customer" | "admin";
+export type UserRole = "customer" | "admin" | "owner";
+
+export type SessionMode = "customer" | "admin";
 
 export type User = {
   _id: string;

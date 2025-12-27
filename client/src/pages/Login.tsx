@@ -22,14 +22,12 @@ export function Login() {
     setError(null);
     setInfo(null);
     try {
-      const result = await dispatch(login({ email, password })).unwrap();
+      await dispatch(
+        login({ email, password, sessionMode: adminMode ? "admin" : "customer" })
+      ).unwrap();
       dispatch(fetchWishlist());
 
       if (adminMode) {
-        if (result.user.role !== "admin") {
-          setError("This account is not an admin.");
-          return;
-        }
         navigate("/admin");
       } else {
         navigate("/account/orders");

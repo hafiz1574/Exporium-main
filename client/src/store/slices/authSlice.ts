@@ -2,10 +2,12 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { api } from "../../api/http";
 import type { User } from "../../types/models";
+import type { SessionMode } from "../../types/models";
 
 type AuthState = {
   token: string | null;
   user: User | null;
+  sessionMode: SessionMode;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   pendingVerificationEmail: string | null;
@@ -14,6 +16,7 @@ type AuthState = {
 const initialState: AuthState = {
   token: localStorage.getItem("exporium_token"),
   user: null,
+  sessionMode: (localStorage.getItem("exporium_session_mode") as SessionMode) || "customer",
   status: "idle",
   error: null,
   pendingVerificationEmail: null
@@ -21,14 +24,17 @@ const initialState: AuthState = {
 
 export const login = createAsyncThunk(
   "auth/login",
-  async (payload: { email: string; password: string }, { rejectWithValue }) => {
+  async (payload: { email: string; password: string; sessionMode?: SessionMode }, { rejectWithValue }) => {
     try {
       const { data } = await api.post("/api/auth/login", payload);
-      return data as { token: string; user: User };
+      return data as { token: string; user: User; sessionMode: SessionMode };
     } catch (err: any) {
       const data = err?.response?.data;
       if (data?.code === "EMAIL_NOT_VERIFIED") {
         return rejectWithValue({ message: data?.error ?? "Email not verified", code: data.code, email: data.email });
+      }
+      if (data?.code === "NOT_ADMIN") {
+        return rejectWithValue("This account is not an admin.");
       }
       return rejectWithValue(data?.error ?? "Login failed");
     }
@@ -77,7 +83,9 @@ const authSlice = createSlice({
     logout(state) {
       state.token = null;
       state.user = null;
+      state.sessionMode = "customer";
       localStorage.removeItem("exporium_token");
+      localStorage.removeItem("exporium_session_mode");
     }
   },
   extraReducers: (builder) => {
@@ -91,7 +99,9 @@ const authSlice = createSlice({
         state.status = "succeeded";
         state.token = action.payload.token;
         state.user = action.payload.user;
+        state.sessionMode = action.payload.sessionMode;
         localStorage.setItem("exporium_token", action.payload.token);
+        localStorage.setItem("exporium_session_mode", action.payload.sessionMode);
         state.pendingVerificationEmail = null;
       })
       .addCase(login.rejected, (state, action) => {

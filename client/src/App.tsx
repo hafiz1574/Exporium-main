@@ -22,6 +22,7 @@ import { AdminCustomers } from "./pages/admin/CustomersAdmin";
 import { AdminDashboard } from "./pages/admin/Dashboard";
 import { AdminOrders } from "./pages/admin/OrdersAdmin";
 import { AdminProducts } from "./pages/admin/ProductsAdmin";
+import { AdminUsers } from "./pages/admin/UsersAdmin";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { fetchMe } from "./store/slices/authSlice";
 import { fetchWishlist } from "./store/slices/wishlistSlice";
@@ -54,16 +55,17 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
-        <Route element={<ProtectedRoute role="customer" />}>
+        <Route element={<ProtectedRoute />}>
           <Route path="/account/orders" element={<AccountOrders />} />
           <Route path="/account/orders/:id" element={<AccountOrderDetails />} />
         </Route>
 
-        <Route element={<ProtectedRoute role="admin" />}>
+        <Route element={<ProtectedRoute roles={["admin", "owner"]} requireAdminMode />}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/customers" element={<AdminCustomers />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

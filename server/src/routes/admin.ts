@@ -6,6 +6,7 @@ import { z } from "zod";
 
 import { requireAuth } from "../middleware/requireAuth";
 import { requireAdmin } from "../middleware/requireAdmin";
+import { requireOwner } from "../middleware/requireOwner";
 import { Product } from "../models/Product";
 import { Order, ORDER_STATUSES } from "../models/Order";
 import { TrackingEvent } from "../models/TrackingEvent";
@@ -193,5 +194,67 @@ adminRouter.get(
       User.countDocuments({ role: "customer" })
     ]);
     res.json({ counts: { products, orders, customers } });
+  })
+);
+
+adminRouter.get(
+  "/users",
+  requireAuth,
+  requireOwner,
+  asyncHandler(async (_req, res) => {
+    const users = await User.find()
+      .select("_id name email role emailVerified createdAt")
+      .sort({ createdAt: -1 })
+      .limit(1000);
+    res.json({ users });
+  })
+);
+
+adminRouter.patch(
+  "/users/:id/role",
+  requireAuth,
+  requireOwner,
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) return res.status(400).json({ error: "Invalid id" });
+
+    const schema = z.object({ role: z.enum(["customer", "admin", "owner"]) });
+    const parsed = schema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "Invalid input" });
+
+    const role = parsed.data.role;
+
+    // Enforce only one owner.
+    if (role === "owner") {
+      await User.updateMany({ role: "owner" }, { $set: { role: "admin" } });
+    }
+
+    const updated = await User.findByIdAndUpdate(
+      id,
+      { $set: { role } },
+      { new: true, select: "_id name email role emailVerified createdAt" }
+    );
+
+    if (!updated) return res.status(404).json({ error: "Not found" });
+    res.json({ user: updated });
+  })
+);
+
+adminRouter.delete(
+  "/users/:id",
+  requireAuth,
+  requireOwner,
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) return res.status(400).json({ error: "Invalid id" });
+
+    if (String(req.user?._id) === String(id)) {
+      return res.status(400).json({ error: "You cannot delete your own account" });
+    }
+
+    const deleted = await User.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ error: "Not found" });
+
+    res.json({ ok: true });
   })
 );

@@ -4,6 +4,7 @@ import { User } from "../models/User";
 
 type JwtPayload = {
   userId: string;
+  sessionMode?: "customer" | "admin";
 };
 
 export async function requireAuth(req: Request, res: Response, next: NextFunction) {
@@ -28,7 +29,8 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
       name: user.name,
       email: user.email,
       role: user.role,
-      emailVerified: user.emailVerified
+      emailVerified: user.emailVerified,
+      sessionMode: decoded.sessionMode ?? "customer"
     };
     return next();
   } catch {

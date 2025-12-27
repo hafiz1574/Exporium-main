@@ -12,12 +12,12 @@ import { requireAuth } from "../middleware/requireAuth";
 
 export const authRouter = Router();
 
-function signToken(userId: string) {
+function signToken(userId: string, sessionMode: "customer" | "admin") {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error("Missing JWT_SECRET");
   const expiresInEnv = process.env.JWT_EXPIRES_IN;
   const expiresIn: SignOptions["expiresIn"] = expiresInEnv ? (expiresInEnv as any) : "30d";
-  return jwt.sign({ userId }, secret, { expiresIn });
+  return jwt.sign({ userId, sessionMode }, secret, { expiresIn });
 }
 
 function sha256Hex(value: string) {
@@ -79,7 +79,8 @@ authRouter.post(
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1)
+  password: z.string().min(1),
+  sessionMode: z.enum(["customer", "admin"]).optional()
 });
 
 authRouter.post(
@@ -89,21 +90,29 @@ authRouter.post(
     if (!parsed.success) return res.status(400).json({ error: "Invalid input" });
 
     const { email, password } = parsed.data;
+    const sessionMode: "customer" | "admin" = parsed.data.sessionMode ?? "customer";
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
     const ok = await bcrypt.compare(password, user.passwordHash);
     if (!ok) return res.status(401).json({ error: "Invalid credentials" });
 
-    if (!user.emailVerified && user.role !== "admin") {
+    // Only customers must verify email before logging in.
+    if (!user.emailVerified && user.role === "customer") {
       return res
         .status(403)
         .json({ error: "Email not verified", code: "EMAIL_NOT_VERIFIED", email: user.email });
     }
 
-    const token = signToken(String(user._id));
+    // Admin-mode login is only for admin/owner accounts.
+    if (sessionMode === "admin" && user.role === "customer") {
+      return res.status(403).json({ error: "Forbidden", code: "NOT_ADMIN" });
+    }
+
+    const token = signToken(String(user._id), sessionMode);
     res.json({
       token,
+      sessionMode,
       user: {
         _id: user._id,
         name: user.name,

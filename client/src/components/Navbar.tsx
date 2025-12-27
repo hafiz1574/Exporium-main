@@ -27,7 +27,8 @@ function applyTheme(theme: Theme) {
 export function Navbar() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((s) => s.auth);
+  const user = useAppSelector((s) => s.auth.user);
+  const sessionMode = useAppSelector((s) => s.auth.sessionMode);
   const cartCount = useAppSelector((s) => s.cart.items.reduce((sum, i) => sum + i.quantity, 0));
 
   const [hidden, setHidden] = useState(false);
@@ -146,7 +147,7 @@ export function Navbar() {
 
             {user ? (
               <>
-                {user.role === "admin" ? (
+                {user.role !== "customer" && sessionMode === "admin" ? (
                   <NavLink to="/admin" className={navClass}>
                     Admin
                   </NavLink>
@@ -203,7 +204,7 @@ export function Navbar() {
 
           {user ? (
             <>
-              {user.role === "admin" ? (
+              {user.role !== "customer" && sessionMode === "admin" ? (
                 <NavLink to="/admin" className={navClass} onClick={() => setMenuOpen(false)}>
                   Admin
                 </NavLink>

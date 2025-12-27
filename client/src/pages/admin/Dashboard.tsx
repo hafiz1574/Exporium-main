@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { api } from "../../api/http";
+import { useAppSelector } from "../../store/hooks";
 
 export function AdminDashboard() {
+  const user = useAppSelector((s) => s.auth.user);
   const [counts, setCounts] = useState<{ products: number; orders: number; customers: number } | null>(null);
 
   useEffect(() => {
@@ -31,6 +33,11 @@ export function AdminDashboard() {
           <Link to="/admin/customers" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white">
             Customers
           </Link>
+          {user?.role === "owner" ? (
+            <Link to="/admin/users" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white">
+              Users
+            </Link>
+          ) : null}
         </div>
       </div>
 
