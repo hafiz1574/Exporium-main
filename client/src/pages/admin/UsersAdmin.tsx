@@ -21,7 +21,7 @@ export function AdminUsers() {
   const [status, setStatus] = useState<"idle" | "loading" | "saving" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
-  const canManage = user?.role === "owner";
+  const canManage = user?.role === "owner" || user?.role === "admin";
 
   const roleOptions = useMemo(() => {
     const roles: UserRole[] = ["customer", "admin", "owner"];
@@ -86,7 +86,7 @@ export function AdminUsers() {
       <div className="space-y-4">
         <h1 className="text-xl font-semibold text-neutral-900 dark:text-white">Admin users</h1>
         <div className="rounded-xl border border-neutral-200 bg-white/70 p-4 text-sm text-neutral-700 dark:border-neutral-800 dark:bg-neutral-950/40 dark:text-neutral-300">
-          Only the owner can manage user roles.
+          Only the owner can manage user roles. (Bootstrap: the seed admin can set the first owner.)
         </div>
         <Link to="/admin" className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white">
           Back

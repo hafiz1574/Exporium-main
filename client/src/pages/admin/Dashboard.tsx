@@ -33,7 +33,7 @@ export function AdminDashboard() {
           <Link to="/admin/customers" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white">
             Customers
           </Link>
-          {user?.role === "owner" ? (
+          {user?.role === "owner" || user?.role === "admin" ? (
             <Link to="/admin/users" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white">
               Users
             </Link>
