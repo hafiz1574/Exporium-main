@@ -11,6 +11,10 @@ import { ProductDetails } from "./pages/ProductDetails";
 import { Products } from "./pages/Products";
 import { Signup } from "./pages/Signup";
 import { Track } from "./pages/Track";
+import { VerifyEmail } from "./pages/VerifyEmail";
+import { VerifyEmailSent } from "./pages/VerifyEmailSent";
+import { ForgotPassword } from "./pages/ForgotPassword";
+import { ResetPassword } from "./pages/ResetPassword";
 import { Wishlist } from "./pages/Wishlist";
 import { AccountOrderDetails } from "./pages/account/OrderDetails";
 import { AccountOrders } from "./pages/account/Orders";
@@ -45,6 +49,10 @@ export default function App() {
         <Route path="/track" element={<Track />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/verify-email/sent" element={<VerifyEmailSent />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route element={<ProtectedRoute role="customer" />}>
           <Route path="/account/orders" element={<AccountOrders />} />

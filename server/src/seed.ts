@@ -36,7 +36,8 @@ async function run() {
         name: "Exporium Admin",
         email: adminEmailLower,
         passwordHash,
-        role: "admin"
+        role: "admin",
+        emailVerified: true
       }
     },
     { upsert: true, new: true }

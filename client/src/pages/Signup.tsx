@@ -19,7 +19,7 @@ export function Signup() {
     setError(null);
     try {
       await dispatch(register({ name, email, password })).unwrap();
-      navigate("/account/orders");
+      navigate(`/verify-email/sent?email=${encodeURIComponent(email)}`);
     } catch (err: any) {
       setError(String(err));
     }

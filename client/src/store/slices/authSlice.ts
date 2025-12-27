@@ -8,13 +8,15 @@ type AuthState = {
   user: User | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  pendingVerificationEmail: string | null;
 };
 
 const initialState: AuthState = {
   token: localStorage.getItem("exporium_token"),
   user: null,
   status: "idle",
-  error: null
+  error: null,
+  pendingVerificationEmail: null
 };
 
 export const login = createAsyncThunk(
@@ -24,7 +26,11 @@ export const login = createAsyncThunk(
       const { data } = await api.post("/api/auth/login", payload);
       return data as { token: string; user: User };
     } catch (err: any) {
-      return rejectWithValue(err?.response?.data?.error ?? "Login failed");
+      const data = err?.response?.data;
+      if (data?.code === "EMAIL_NOT_VERIFIED") {
+        return rejectWithValue({ message: data?.error ?? "Email not verified", code: data.code, email: data.email });
+      }
+      return rejectWithValue(data?.error ?? "Login failed");
     }
   }
 );
@@ -34,9 +40,21 @@ export const register = createAsyncThunk(
   async (payload: { name: string; email: string; password: string }, { rejectWithValue }) => {
     try {
       const { data } = await api.post("/api/auth/register", payload);
-      return data as { token: string; user: User };
+      return data as { message: string; email: string };
     } catch (err: any) {
       return rejectWithValue(err?.response?.data?.error ?? "Signup failed");
+    }
+  }
+);
+
+export const resendVerification = createAsyncThunk(
+  "auth/resendVerification",
+  async (payload: { email: string }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post("/api/auth/resend-verification", payload);
+      return data as { message: string };
+    } catch (err: any) {
+      return rejectWithValue(err?.response?.data?.error ?? "Failed to resend verification email");
     }
   }
 );
@@ -65,26 +83,33 @@ const authSlice = createSlice({
       .addCase(login.pending, (state) => {
         state.status = "loading";
         state.error = null;
+        state.pendingVerificationEmail = null;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.token = action.payload.token;
         state.user = action.payload.user;
         localStorage.setItem("exporium_token", action.payload.token);
+        state.pendingVerificationEmail = null;
       })
       .addCase(login.rejected, (state, action) => {
         state.status = "failed";
-        state.error = String(action.payload ?? action.error.message ?? "Login failed");
+        const payload: any = action.payload;
+        state.error = String(
+          (typeof payload === "string" ? payload : payload?.message) ??
+            action.error.message ??
+            "Login failed"
+        );
+        state.pendingVerificationEmail =
+          payload && typeof payload === "object" && payload?.code === "EMAIL_NOT_VERIFIED" ? payload.email : null;
       })
       .addCase(register.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
-      .addCase(register.fulfilled, (state, action) => {
+      .addCase(register.fulfilled, (state) => {
         state.status = "succeeded";
-        state.token = action.payload.token;
-        state.user = action.payload.user;
-        localStorage.setItem("exporium_token", action.payload.token);
+        // Policy (A): registration does not log in until email is verified.
       })
       .addCase(register.rejected, (state, action) => {
         state.status = "failed";
@@ -92,6 +117,17 @@ const authSlice = createSlice({
       })
       .addCase(fetchMe.fulfilled, (state, action) => {
         state.user = action.payload.user;
+      })
+      .addCase(resendVerification.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(resendVerification.fulfilled, (state) => {
+        state.status = "succeeded";
+      })
+      .addCase(resendVerification.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = String(action.payload ?? action.error.message ?? "Failed to resend verification email");
       });
   }
 });

@@ -20,14 +20,15 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
 
   try {
     const decoded = jwt.verify(token, secret) as JwtPayload;
-    const user = await User.findById(decoded.userId).select("_id name email role");
+    const user = await User.findById(decoded.userId).select("_id name email role emailVerified");
     if (!user) return res.status(401).json({ error: "Unauthorized" });
 
     req.user = {
       _id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role
+      role: user.role,
+      emailVerified: user.emailVerified
     };
     return next();
   } catch {
