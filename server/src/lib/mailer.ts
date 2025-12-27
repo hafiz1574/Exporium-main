@@ -42,12 +42,17 @@ export async function sendEmail({ to, subject, text, html }: SendEmailParams) {
     }
   });
 
-  await transporter.sendMail({
-    from,
-    replyTo,
-    to,
-    subject,
-    text,
-    html
-  });
+  try {
+    await transporter.sendMail({
+      from,
+      replyTo,
+      to,
+      subject,
+      text,
+      html
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("[email:error]", err);
+  }
 }
