@@ -38,21 +38,49 @@ export function AdminProducts() {
     loadProducts();
   }, []);
 
+  function getApiErrorMessage(err: unknown) {
+    const anyErr = err as any;
+    return (
+      anyErr?.response?.data?.error ||
+      anyErr?.message ||
+      "Request failed. Please try again (or re-login)."
+    );
+  }
+
   const canSave = useMemo(() => {
-    return form.name && form.brand && form.category && form.description && form.price >= 0 && form.stock >= 0;
+    return (
+      form.name &&
+      form.brand &&
+      form.category &&
+      form.description &&
+      form.price >= 0 &&
+      form.stock >= 0 &&
+      (form.sizes?.length ?? 0) > 0 &&
+      (form.images?.length ?? 0) > 0
+    );
   }, [form]);
 
   async function uploadImages() {
-    if (!files || files.length === 0) return;
+    setMessage(null);
+    if (!files || files.length === 0) {
+      setMessage("Choose image files first.");
+      return;
+    }
     const fd = new FormData();
     Array.from(files).forEach((f) => fd.append("images", f));
 
-    const { data } = await api.post("/api/admin/upload", fd, {
-      headers: { "Content-Type": "multipart/form-data" }
-    });
+    try {
+      const { data } = await api.post("/api/admin/upload", fd, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
 
-    const urls = data as string[];
-    setForm((prev) => ({ ...prev, images: [...prev.images, ...urls] }));
+      const urls = data as string[];
+      setForm((prev) => ({ ...prev, images: [...prev.images, ...urls] }));
+      setFiles(null);
+      setMessage("Images uploaded.");
+    } catch (err) {
+      setMessage(getApiErrorMessage(err));
+    }
   }
 
   async function save() {
@@ -70,22 +98,32 @@ export function AdminProducts() {
       stock: Number(form.stock)
     };
 
-    if (form._id) {
-      await api.put(`/api/admin/products/${form._id}`, payload);
-      setMessage("Updated.");
-    } else {
-      await api.post("/api/admin/products", payload);
-      setMessage("Created.");
-    }
+    try {
+      if (form._id) {
+        await api.put(`/api/admin/products/${form._id}`, payload);
+        setMessage("Updated.");
+      } else {
+        await api.post("/api/admin/products", payload);
+        setMessage("Created.");
+      }
 
-    setForm(emptyForm);
-    setFiles(null);
-    await loadProducts();
+      setForm(emptyForm);
+      setFiles(null);
+      await loadProducts();
+    } catch (err) {
+      setMessage(getApiErrorMessage(err));
+    }
   }
 
   async function remove(productId: string) {
-    await api.delete(`/api/admin/products/${productId}`);
-    await loadProducts();
+    setMessage(null);
+    try {
+      await api.delete(`/api/admin/products/${productId}`);
+      setMessage("Deleted.");
+      await loadProducts();
+    } catch (err) {
+      setMessage(getApiErrorMessage(err));
+    }
   }
 
   return (
