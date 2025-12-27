@@ -3,7 +3,14 @@ import { useEffect, useMemo, useState } from "react";
 import { api } from "../../api/http";
 import type { Product } from "../../types/models";
 
-type FormState = Omit<Product, "_id"> & { _id?: string };
+type FormState = Omit<Product, "_id"> & { _id?: string; sizesText?: string };
+
+function parseCommaSeparatedList(value: string): string[] {
+  return value
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
 
 const emptyForm: FormState = {
   name: "",
@@ -13,6 +20,7 @@ const emptyForm: FormState = {
   price: 0,
   images: [],
   sizes: ["8", "9", "10"],
+  sizesText: "8,9,10",
   stock: 0
 };
 
@@ -87,6 +95,8 @@ export function AdminProducts() {
     setMessage(null);
     if (!canSave) return;
 
+    const normalizedSizes = parseCommaSeparatedList(form.sizesText ?? form.sizes.join(","));
+
     const payload = {
       name: form.name,
       brand: form.brand,
@@ -94,7 +104,7 @@ export function AdminProducts() {
       description: form.description,
       price: Number(form.price),
       images: form.images,
-      sizes: form.sizes,
+      sizes: normalizedSizes,
       stock: Number(form.stock)
     };
 
@@ -224,16 +234,15 @@ export function AdminProducts() {
               </label>
               <input
                 id={`${formId}-sizes`}
-                value={form.sizes.join(",")}
-                onChange={(e) =>
+                value={form.sizesText ?? form.sizes.join(",")}
+                onChange={(e) => {
+                  const sizesText = e.target.value;
                   setForm((p) => ({
                     ...p,
-                    sizes: e.target.value
-                      .split(",")
-                      .map((s) => s.trim())
-                      .filter(Boolean)
-                  }))
-                }
+                    sizesText,
+                    sizes: parseCommaSeparatedList(sizesText)
+                  }));
+                }}
                 placeholder="Sizes (comma separated)"
                 className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-800 dark:bg-black dark:text-white"
               />
@@ -315,7 +324,7 @@ export function AdminProducts() {
                   <div className="flex gap-2">
                     <button
                       className="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-900 hover:border-neutral-400 dark:border-neutral-700 dark:text-white dark:hover:border-neutral-500"
-                      onClick={() => setForm({ ...p })}
+                      onClick={() => setForm({ ...p, sizesText: p.sizes?.join(",") ?? "" })}
                     >
                       Edit
                     </button>
