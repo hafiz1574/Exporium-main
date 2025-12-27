@@ -130,8 +130,8 @@ export function ProductDetails() {
           <div className="rounded-xl border border-neutral-200 bg-white/70 p-4 dark:border-neutral-800 dark:bg-neutral-950/40">
             <div className="text-sm font-medium text-neutral-900 dark:text-white">Payment</div>
             <div className="mt-2 space-y-1 text-sm text-neutral-600 dark:text-neutral-400">
-              <div>Secure Stripe Checkout.</div>
-              <div>You’ll receive an order and tracking ID after payment.</div>
+              <div>Secure checkout.</div>
+              <div>You’ll receive an order and tracking ID after confirmation.</div>
             </div>
           </div>
         </div>
@@ -139,8 +139,8 @@ export function ProductDetails() {
         <div className="rounded-xl border border-neutral-200 bg-white/70 p-4 dark:border-neutral-800 dark:bg-neutral-950/40">
           <div className="text-sm font-medium text-neutral-900 dark:text-white">How tracking works</div>
           <div className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-            After checkout, Exporium creates your order and assigns a tracking ID. Use it on the Track page
-            to view shipment timeline updates (processing, dispatched, in transit, delivered).
+            After confirmation, Exporium creates your order and assigns a tracking ID. Use it on the Track page to view
+            shipment timeline updates (processing, dispatched, in transit, delivered).
           </div>
         </div>
 

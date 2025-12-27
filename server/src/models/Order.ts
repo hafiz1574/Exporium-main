@@ -34,7 +34,6 @@ const orderSchema = new mongoose.Schema(
     paymentStatus: { type: String, enum: ["PENDING", "PAID", "FAILED"], default: "PENDING" },
     status: { type: String, enum: ORDER_STATUSES, default: "CONFIRMED", index: true },
     trackingId: { type: String, required: true, unique: true, index: true },
-    stripeSessionId: { type: String },
     customerEmail: { type: String }
   },
   { timestamps: true }

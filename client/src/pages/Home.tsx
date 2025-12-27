@@ -86,7 +86,7 @@ export function Home() {
               </div>
               <div className="rounded-2xl border border-neutral-200 bg-white/60 p-5 dark:border-neutral-800 dark:bg-neutral-950/60">
                 <div className="text-sm font-medium text-neutral-900 dark:text-white">Fast checkout</div>
-                <div className="mt-1 text-xs text-neutral-600 dark:text-neutral-400">Secure Stripe hosted checkout.</div>
+                <div className="mt-1 text-xs text-neutral-600 dark:text-neutral-400">Secure checkout experience.</div>
               </div>
               <div className="rounded-2xl border border-neutral-200 bg-white/60 p-5 dark:border-neutral-800 dark:bg-neutral-950/60">
                 <div className="text-sm font-medium text-neutral-900 dark:text-white">Order tracking</div>

@@ -1,7 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { api } from "../api/http";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { removeFromCart, setQuantity } from "../store/slices/cartSlice";
 import { formatMoney } from "../utils/format";
@@ -12,28 +11,12 @@ export function Cart() {
   const { token } = useAppSelector((s) => s.auth);
   const items = useAppSelector((s) => s.cart.items);
 
-  const [loading, setLoading] = useState(false);
-
   const total = useMemo(
     () => items.reduce((sum, i) => sum + i.price * i.quantity, 0),
     [items]
   );
 
-  async function checkout() {
-    if (!token) return navigate("/login");
-    if (!items.length) return;
-
-    setLoading(true);
-    try {
-      const payload = {
-        items: items.map((i) => ({ productId: i.productId, quantity: i.quantity, size: i.size }))
-      };
-      const { data } = await api.post("/api/checkout/create-session", payload);
-      window.location.href = data.url;
-    } finally {
-      setLoading(false);
-    }
-  }
+  const checkoutDisabled = true;
 
   return (
     <div className="space-y-6">
@@ -95,12 +78,17 @@ export function Cart() {
               <span className="text-neutral-900 font-semibold dark:text-white">{formatMoney(total)}</span>
             </div>
             <button
-              disabled={loading}
-              onClick={checkout}
+              disabled={checkoutDisabled}
+              onClick={() => {
+                if (!token) navigate("/login");
+              }}
               className="mt-4 w-full rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
             >
-              {loading ? "Redirecting…" : "Checkout"}
+              Checkout
             </button>
+            {checkoutDisabled ? (
+              <div className="mt-2 text-xs text-neutral-600 dark:text-neutral-400">Checkout is currently unavailable.</div>
+            ) : null}
           </div>
         </div>
       )}

@@ -54,14 +54,6 @@ This creates:
 - Copy your connection string into `MONGO_URI`.
 - In **Network Access**, allow `0.0.0.0/0` (required for Render).
 
-## Stripe (test mode)
-
-- Set `STRIPE_SECRET_KEY` from your Stripe dashboard (test key).
-- Webhook:
-  - Add an endpoint pointing to: `https://<your-server-url>/api/webhooks/stripe`
-  - Subscribe to event: `checkout.session.completed`
-  - Copy the signing secret to `STRIPE_WEBHOOK_SECRET`
-
 ## Cloudinary
 
 Create a Cloudinary account and set:
@@ -84,8 +76,6 @@ Admin upload endpoint:
   - `MONGO_URI`
   - `JWT_SECRET`
   - `CLIENT_URL` (your Render static site URL)
-  - `STRIPE_SECRET_KEY`
-  - `STRIPE_WEBHOOK_SECRET`
   - `CLOUDINARY_CLOUD_NAME`
   - `CLOUDINARY_API_KEY`
   - `CLOUDINARY_API_SECRET`
@@ -99,7 +89,6 @@ Admin upload endpoint:
 - Publish Directory: `dist`
 - Env Vars:
   - `VITE_API_URL` (your Render server base URL)
-  - `VITE_STRIPE_PUBLISHABLE_KEY` (optional for Checkout redirect flow; server creates sessions)
 
 ## Key API endpoints
 
@@ -116,10 +105,6 @@ Wishlist:
 - `GET /api/wishlist`
 - `POST /api/wishlist/:productId`
 - `DELETE /api/wishlist/:productId`
-
-Checkout + Webhook:
-- `POST /api/checkout/create-session`
-- `POST /api/webhooks/stripe`
 
 Orders:
 - `GET /api/orders/my`
