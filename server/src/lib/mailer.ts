@@ -28,7 +28,7 @@ export async function sendEmail({ to, subject, text, html }: SendEmailParams) {
   const smtp = getSmtpConfig();
   if (!smtp) {
     // eslint-disable-next-line no-console
-    console.log("[email:disabled]", { to, subject, text });
+    console.log("[email:disabled]", { to, subject });
     return;
   }
 
@@ -36,6 +36,7 @@ export async function sendEmail({ to, subject, text, html }: SendEmailParams) {
     host: smtp.host,
     port: smtp.port,
     secure: smtp.secure,
+    requireTLS: !smtp.secure,
     connectionTimeout: 10_000,
     greetingTimeout: 10_000,
     socketTimeout: 20_000,
@@ -46,7 +47,7 @@ export async function sendEmail({ to, subject, text, html }: SendEmailParams) {
   });
 
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from,
       replyTo,
       to,
@@ -54,8 +55,25 @@ export async function sendEmail({ to, subject, text, html }: SendEmailParams) {
       text,
       html
     });
-  } catch (err) {
+
     // eslint-disable-next-line no-console
-    console.error("[email:error]", err);
+    console.log("[email:sent]", {
+      to,
+      subject,
+      messageId: (info as any)?.messageId,
+      accepted: (info as any)?.accepted,
+      rejected: (info as any)?.rejected
+    });
+  } catch (err) {
+    const anyErr = err as any;
+    // eslint-disable-next-line no-console
+    console.error("[email:error]", {
+      to,
+      subject,
+      message: anyErr?.message,
+      code: anyErr?.code,
+      response: anyErr?.response,
+      responseCode: anyErr?.responseCode
+    });
   }
 }
