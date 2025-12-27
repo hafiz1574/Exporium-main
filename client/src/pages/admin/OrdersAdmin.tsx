@@ -92,7 +92,7 @@ function OrderRow({
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <div className="rounded-lg border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-black">
           <div className="text-sm font-medium text-neutral-900 dark:text-white">Update status</div>
-          <div className="mt-2 flex gap-2">
+          <div className="mt-2 flex flex-col gap-2 sm:flex-row">
             <select
               value={nextStatus}
               onChange={(e) => setNextStatus(e.target.value as OrderStatus)}
@@ -105,7 +105,7 @@ function OrderRow({
               ))}
             </select>
             <button
-              className="rounded-md bg-black px-3 py-2 text-sm font-medium text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+              className="rounded-md bg-black px-3 py-2 text-sm font-medium text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 sm:w-auto"
               onClick={() => onStatus(order._id, nextStatus)}
             >
               Save

@@ -59,7 +59,7 @@ export function ProductDetails() {
         >
           {(product.images ?? []).map((src) => (
             <SwiperSlide key={src}>
-              <img src={src} alt={product.name} className="h-[420px] w-full object-cover" />
+              <img src={src} alt={product.name} className="h-72 w-full object-cover sm:h-[420px]" />
             </SwiperSlide>
           ))}
         </Swiper>

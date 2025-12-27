@@ -33,12 +33,12 @@ export function AccountOrderDetails() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold text-neutral-900 dark:text-white">Order</h1>
           <div className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{new Date(order.createdAt).toLocaleString()}</div>
           <div className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">Status: {order.status}</div>
-          <div className="mt-1 text-xs text-neutral-500">Tracking: {order.trackingId}</div>
+          <div className="mt-1 text-xs text-neutral-500 break-all">Tracking: {order.trackingId}</div>
         </div>
         <Link to="/track" className="text-sm text-neutral-900 underline dark:text-white">
           Track
@@ -49,8 +49,8 @@ export function AccountOrderDetails() {
         <div className="text-sm font-medium text-neutral-900 dark:text-white">Items</div>
         <div className="mt-3 space-y-3">
           {order.items.map((i) => (
-            <div key={`${i.productId}:${i.size ?? ""}`} className="flex items-center justify-between">
-              <div className="text-sm text-neutral-800 dark:text-neutral-200">
+            <div key={`${i.productId}:${i.size ?? ""}`} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <div className="text-sm text-neutral-800 dark:text-neutral-200 break-words">
                 {i.name} {i.size ? `(Size ${i.size})` : ""} × {i.quantity}
               </div>
               <div className="text-sm text-neutral-800 dark:text-neutral-200">{formatMoney(i.price * i.quantity)}</div>
@@ -68,7 +68,7 @@ export function AccountOrderDetails() {
         <div className="mt-3 space-y-3">
           {events.map((ev) => (
             <div key={ev._id} className="rounded-lg border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-black">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                 <div className="text-sm font-medium text-neutral-900 dark:text-white">{ev.status}</div>
                 <div className="text-xs text-neutral-500">{new Date(ev.createdAt).toLocaleString()}</div>
               </div>

@@ -41,12 +41,12 @@ export function AccountOrders() {
               to={`/account/orders/${o._id}`}
               className="block rounded-xl border border-neutral-200 bg-white/70 p-4 hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-950/40 dark:hover:border-neutral-700"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div className="text-sm text-neutral-600 dark:text-neutral-400">{new Date(o.createdAt).toLocaleString()}</div>
                 <div className="text-sm text-neutral-900 font-medium dark:text-white">{formatMoney(o.amountTotal)}</div>
               </div>
               <div className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">Status: {o.status}</div>
-              <div className="mt-1 text-xs text-neutral-500">Tracking: {o.trackingId}</div>
+              <div className="mt-1 text-xs text-neutral-500 break-all">Tracking: {o.trackingId}</div>
             </Link>
           ))}
         </div>
