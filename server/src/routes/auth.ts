@@ -67,7 +67,7 @@ authRouter.post(
     });
 
     const verifyUrl = `${getClientUrl()}/verify-email?token=${verificationToken}`;
-    await sendEmail({
+    void sendEmail({
       to: user.email,
       subject: "Verify your Exporium account",
       text: `Welcome to Exporium!\n\nPlease verify your email by opening this link:\n${verifyUrl}\n\nThis link expires in 24 hours.`
@@ -158,7 +158,7 @@ authRouter.post(
     await user.save();
 
     const verifyUrl = `${getClientUrl()}/verify-email?token=${verificationToken}`;
-    await sendEmail({
+    void sendEmail({
       to: user.email,
       subject: "Verify your Exporium account",
       text: `Please verify your email by opening this link:\n${verifyUrl}\n\nThis link expires in 24 hours.`
@@ -185,7 +185,7 @@ authRouter.post(
       await user.save();
 
       const resetUrl = `${getClientUrl()}/reset-password?token=${resetToken}`;
-      await sendEmail({
+      void sendEmail({
         to: user.email,
         subject: "Reset your Exporium password",
         text: `You requested a password reset.\n\nOpen this link to set a new password:\n${resetUrl}\n\nThis link expires in 1 hour. If you didn't request this, you can ignore this email.`
