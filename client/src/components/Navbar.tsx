@@ -30,6 +30,8 @@ export function Navbar() {
   const { user } = useAppSelector((s) => s.auth);
   const cartCount = useAppSelector((s) => s.cart.items.reduce((sum, i) => sum + i.quantity, 0));
 
+  const [hidden, setHidden] = useState(false);
+
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
   const isDark = theme === "dark";
 
@@ -38,12 +40,46 @@ export function Navbar() {
     localStorage.setItem(THEME_KEY, theme);
   }, [theme]);
 
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let raf = 0;
+
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const delta = y - lastY;
+
+        if (y < 8) {
+          setHidden(false);
+        } else if (delta > 10 && y > 80) {
+          setHidden(true);
+        } else if (delta < -10) {
+          setHidden(false);
+        }
+
+        lastY = y;
+        raf = 0;
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      if (raf) window.cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
   const toggleLabel = useMemo(() => (isDark ? "Switch to light mode" : "Switch to dark mode"), [isDark]);
 
   const facebookUrl = "https://www.facebook.com/profile.php?id=61583223486613";
 
   return (
-    <header className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-black">
+    <header
+      className={`sticky top-0 z-50 border-b border-neutral-200 bg-white transition-transform duration-200 dark:border-neutral-800 dark:bg-black ${
+        hidden ? "-translate-y-full" : "translate-y-0"
+      }`}
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Link to="/" className="flex items-center gap-3">
           <img
@@ -55,6 +91,9 @@ export function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-5">
+          <NavLink to="/" end className={navClass}>
+            Home
+          </NavLink>
           <NavLink to="/products" className={navClass}>
             Products
           </NavLink>
