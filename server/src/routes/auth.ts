@@ -6,11 +6,54 @@ import type { SignOptions } from "jsonwebtoken";
 import { z } from "zod";
 
 import { User } from "../models/User";
-import { sendEmail } from "../lib/mailer";
+import { getEmailDiagnostics, sendEmail, sendTestEmail, verifySmtpConnection } from "../lib/mailer";
 import { asyncHandler } from "../utils/asyncHandler";
 import { requireAuth } from "../middleware/requireAuth";
 
 export const authRouter = Router();
+
+function requireAdmin(req: any, res: any) {
+  if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+  if (req.user.role !== "admin") return res.status(403).json({ error: "Forbidden" });
+  return null;
+}
+
+authRouter.get(
+  "/email/diagnostics",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const denied = requireAdmin(req, res);
+    if (denied) return;
+    return res.json(getEmailDiagnostics());
+  })
+);
+
+authRouter.post(
+  "/email/verify",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const denied = requireAdmin(req, res);
+    if (denied) return;
+    const result = await verifySmtpConnection();
+    return res.json(result);
+  })
+);
+
+authRouter.post(
+  "/email/test",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const denied = requireAdmin(req, res);
+    if (denied) return;
+
+    const schema = z.object({ to: z.string().email() });
+    const parsed = schema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "Invalid input" });
+
+    const result = await sendTestEmail(parsed.data.to.toLowerCase());
+    return res.json(result);
+  })
+);
 
 function signToken(userId: string) {
   const secret = process.env.JWT_SECRET;

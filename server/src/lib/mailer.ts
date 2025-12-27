@@ -7,6 +7,19 @@ type SendEmailParams = {
   html?: string;
 };
 
+type EmailDiagnostics = {
+  enabled: boolean;
+  from: string;
+  replyTo?: string;
+  smtp?: {
+    host: string;
+    port: number;
+    secure: boolean;
+    user: string;
+  };
+  missing?: Array<"SMTP_HOST" | "SMTP_PORT" | "SMTP_USER" | "SMTP_PASS">;
+};
+
 function getSmtpConfig() {
   const host = process.env.SMTP_HOST;
   const port = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
@@ -21,18 +34,24 @@ function getSmtpConfig() {
   return { host, port, user, pass, secure };
 }
 
-export async function sendEmail({ to, subject, text, html }: SendEmailParams) {
-  const from = process.env.EMAIL_FROM || process.env.SMTP_FROM || "no-reply@exporium";
-  const replyTo = process.env.EMAIL_REPLY_TO || process.env.REPLY_TO;
+function getEmailFrom() {
+  return process.env.EMAIL_FROM || process.env.SMTP_FROM || "no-reply@exporium";
+}
+
+function getReplyTo() {
+  return process.env.EMAIL_REPLY_TO || process.env.REPLY_TO;
+}
+
+let cachedTransporter: nodemailer.Transporter | null = null;
+
+function getTransporter() {
+  if (cachedTransporter) return cachedTransporter;
 
   const smtp = getSmtpConfig();
-  if (!smtp) {
-    // eslint-disable-next-line no-console
-    console.log("[email:disabled]", { to, subject });
-    return;
-  }
+  if (!smtp) return null;
 
-  const transporter = nodemailer.createTransport({
+  const isProd = process.env.NODE_ENV === "production";
+  cachedTransporter = nodemailer.createTransport({
     host: smtp.host,
     port: smtp.port,
     secure: smtp.secure,
@@ -43,8 +62,125 @@ export async function sendEmail({ to, subject, text, html }: SendEmailParams) {
     auth: {
       user: smtp.user,
       pass: smtp.pass
-    }
+    },
+    logger: !isProd,
+    debug: !isProd
   });
+
+  return cachedTransporter;
+}
+
+export function getEmailDiagnostics(): EmailDiagnostics {
+  const from = getEmailFrom();
+  const replyTo = getReplyTo();
+
+  const missing: EmailDiagnostics["missing"] = [];
+  if (!process.env.SMTP_HOST) missing.push("SMTP_HOST");
+  if (!process.env.SMTP_PORT) missing.push("SMTP_PORT");
+  if (!process.env.SMTP_USER) missing.push("SMTP_USER");
+  if (!process.env.SMTP_PASS) missing.push("SMTP_PASS");
+
+  const smtp = getSmtpConfig();
+  if (!smtp) {
+    return {
+      enabled: false,
+      from,
+      replyTo,
+      missing
+    };
+  }
+
+  return {
+    enabled: true,
+    from,
+    replyTo,
+    smtp: {
+      host: smtp.host,
+      port: smtp.port,
+      secure: smtp.secure,
+      user: smtp.user
+    }
+  };
+}
+
+export async function verifySmtpConnection() {
+  const transporter = getTransporter();
+  if (!transporter) {
+    return { ok: false as const, error: "SMTP not configured" };
+  }
+
+  try {
+    await transporter.verify();
+    return { ok: true as const };
+  } catch (err) {
+    const anyErr = err as any;
+    return {
+      ok: false as const,
+      error: anyErr?.message || "SMTP verify failed",
+      code: anyErr?.code,
+      response: anyErr?.response,
+      responseCode: anyErr?.responseCode
+    };
+  }
+}
+
+export async function sendTestEmail(to: string) {
+  const transporter = getTransporter();
+  if (!transporter) {
+    return { ok: false as const, error: "SMTP not configured" };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: getEmailFrom(),
+      replyTo: getReplyTo(),
+      to,
+      subject: "Exporium SMTP test",
+      text: "This is a test email from Exporium via Brevo SMTP."
+    });
+    return {
+      ok: true as const,
+      messageId: (info as any)?.messageId,
+      accepted: (info as any)?.accepted,
+      rejected: (info as any)?.rejected
+    };
+  } catch (err) {
+    const anyErr = err as any;
+    return {
+      ok: false as const,
+      error: anyErr?.message || "SMTP send failed",
+      code: anyErr?.code,
+      response: anyErr?.response,
+      responseCode: anyErr?.responseCode
+    };
+  }
+}
+
+export async function sendEmail({ to, subject, text, html }: SendEmailParams) {
+  const from = getEmailFrom();
+  const replyTo = getReplyTo();
+
+  const smtp = getSmtpConfig();
+  if (!smtp) {
+    // eslint-disable-next-line no-console
+    console.log("[email:disabled]", {
+      to,
+      subject,
+      missing: getEmailDiagnostics().missing
+    });
+    return;
+  }
+
+  const transporter = getTransporter();
+  if (!transporter) {
+    // eslint-disable-next-line no-console
+    console.log("[email:disabled]", {
+      to,
+      subject,
+      missing: getEmailDiagnostics().missing
+    });
+    return;
+  }
 
   try {
     const info = await transporter.sendMail({
