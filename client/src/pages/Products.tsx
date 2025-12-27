@@ -7,12 +7,14 @@ import type { Product } from "../types/models";
 export function Products() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState<"newest" | "price_asc" | "price_desc">("newest");
 
   async function fetchProducts() {
     setLoading(true);
+    setError(null);
     try {
       const params: Record<string, string> = { sort };
       if (search.trim()) params.search = search.trim();
@@ -20,6 +22,9 @@ export function Products() {
 
       const { data } = await api.get("/api/products", { params });
       setProducts(data.products as Product[]);
+    } catch (err: any) {
+      setProducts([]);
+      setError(err?.response?.data?.error || err?.message || "Failed to load products");
     } finally {
       setLoading(false);
     }
@@ -87,6 +92,19 @@ export function Products() {
 
       {loading ? (
         <div className="text-sm text-neutral-400">Loading…</div>
+      ) : error ? (
+        <div className="rounded-xl border border-neutral-800 bg-neutral-950/40 p-4 text-sm text-neutral-200">
+          <div className="font-medium text-white">Couldn’t load products</div>
+          <div className="mt-1 text-neutral-400">{error}</div>
+          <div className="mt-3">
+            <button
+              onClick={fetchProducts}
+              className="rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:bg-neutral-200"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((p) => (
