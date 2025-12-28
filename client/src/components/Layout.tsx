@@ -5,7 +5,7 @@ import { Navbar } from "./Navbar";
 
 export function Layout() {
   return (
-    <div className="min-h-full">
+    <div className="min-h-screen flex flex-col">
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div
           className="absolute inset-0 bg-[url('https://source.unsplash.com/2400x1600/?sneakers,shoes')] bg-cover bg-center opacity-25 dark:opacity-35"
@@ -22,7 +22,7 @@ export function Layout() {
       </div>
 
       <Navbar />
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
         <Outlet />
       </main>
       <Footer />
