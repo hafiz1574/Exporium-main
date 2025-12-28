@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
+import { api } from "../api/http";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { logout } from "../store/slices/authSlice";
 import { clearWishlist } from "../store/slices/wishlistSlice";
@@ -31,6 +32,8 @@ export function Navbar() {
   const sessionMode = useAppSelector((s) => s.auth.sessionMode);
   const cartCount = useAppSelector((s) => s.cart.items.reduce((sum, i) => sum + i.quantity, 0));
 
+  const [activeAnnouncementsCount, setActiveAnnouncementsCount] = useState(0);
+
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -41,6 +44,22 @@ export function Navbar() {
     applyTheme(theme);
     localStorage.setItem(THEME_KEY, theme);
   }, [theme]);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const { data } = await api.get("/api/announcements");
+        const count = Array.isArray(data?.announcements) ? data.announcements.length : 0;
+        if (mounted) setActiveAnnouncementsCount(count);
+      } catch {
+        // Non-critical; avoid showing noisy errors in the navbar.
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -128,7 +147,7 @@ export function Navbar() {
               Products
             </NavLink>
             <NavLink to="/announcements" className={navClass}>
-              <span className="inline-flex items-center" aria-label="Announcements" title="Announcements">
+              <span className="relative inline-flex items-center" aria-label="Announcements" title="Announcements">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -142,6 +161,11 @@ export function Navbar() {
                   <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
                   <path d="M13.73 21a2 2 0 01-3.46 0" />
                 </svg>
+                {activeAnnouncementsCount > 0 ? (
+                  <span className="absolute -right-2 -top-2 min-w-4 rounded-full bg-neutral-900 px-1 text-[10px] leading-4 text-white dark:bg-white dark:text-black">
+                    {activeAnnouncementsCount}
+                  </span>
+                ) : null}
               </span>
             </NavLink>
             <NavLink to="/wishlist" className={navClass}>
