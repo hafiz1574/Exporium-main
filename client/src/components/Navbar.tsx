@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
 import { api } from "../api/http";
@@ -33,6 +33,12 @@ export function Navbar() {
   const cartCount = useAppSelector((s) => s.cart.items.reduce((sum, i) => sum + i.quantity, 0));
 
   const [activeAnnouncementsCount, setActiveAnnouncementsCount] = useState(0);
+  const [announcementsOpen, setAnnouncementsOpen] = useState(false);
+  const [announcementsStatus, setAnnouncementsStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [announcementsError, setAnnouncementsError] = useState<string | null>(null);
+  const [announcements, setAnnouncements] = useState<Array<{ _id: string; title: string; message: string; createdAt: string }>>([]);
+  const announcementsPopoverRef = useRef<HTMLDivElement | null>(null);
+  const announcementsPopoverMobileRef = useRef<HTMLDivElement | null>(null);
 
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -60,6 +66,51 @@ export function Navbar() {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    const onMouseDown = (e: MouseEvent) => {
+      if (!announcementsOpen) return;
+      const desktopPopover = announcementsPopoverRef.current;
+      const mobilePopover = announcementsPopoverMobileRef.current;
+      const targetIsOutsideDesktop = desktopPopover ? e.target instanceof Node && !desktopPopover.contains(e.target) : true;
+      const targetIsOutsideMobile = mobilePopover ? e.target instanceof Node && !mobilePopover.contains(e.target) : true;
+
+      if (targetIsOutsideDesktop && targetIsOutsideMobile) {
+        setAnnouncementsOpen(false);
+      }
+    };
+    window.addEventListener("mousedown", onMouseDown);
+    return () => window.removeEventListener("mousedown", onMouseDown);
+  }, [announcementsOpen]);
+
+  async function loadAnnouncements() {
+    setAnnouncementsStatus("loading");
+    setAnnouncementsError(null);
+    try {
+      const { data } = await api.get("/api/announcements");
+      const items = Array.isArray(data?.announcements) ? data.announcements : [];
+      setAnnouncements(items);
+      setAnnouncementsStatus("idle");
+    } catch (err: any) {
+      setAnnouncementsStatus("error");
+      setAnnouncementsError(err?.response?.data?.error ?? err?.message ?? "Failed to load announcements");
+    }
+  }
+
+  async function openAnnouncements() {
+    setAnnouncementsOpen(true);
+    if (announcementsStatus === "error" || announcements.length === 0) {
+      await loadAnnouncements();
+    }
+  }
+
+  async function toggleAnnouncements() {
+    if (announcementsOpen) {
+      setAnnouncementsOpen(false);
+      return;
+    }
+    await openAnnouncements();
+  }
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -166,9 +217,17 @@ export function Navbar() {
               </a>
             </div>
 
-            <div className="ml-2 flex items-center gap-5 border-l border-neutral-200 pl-3 dark:border-neutral-800">
-              <NavLink to="/announcements" className={navClass}>
-                <span className="relative inline-flex items-center" aria-label="Announcements" title="Announcements">
+            <div className="relative ml-2 flex items-center gap-5 border-l border-neutral-200 pl-3 dark:border-neutral-800">
+              <button
+                type="button"
+                className={navClass({ isActive: announcementsOpen })}
+                onClick={() => void toggleAnnouncements()}
+                aria-label="Announcements"
+                title="Announcements"
+                aria-expanded={announcementsOpen}
+                aria-controls="announcements-popover"
+              >
+                <span className="relative inline-flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -188,7 +247,55 @@ export function Navbar() {
                     </span>
                   ) : null}
                 </span>
-              </NavLink>
+              </button>
+
+              {announcementsOpen ? (
+                <div
+                  id="announcements-popover"
+                  ref={announcementsPopoverRef}
+                  className="absolute right-0 top-full z-50 mt-3 w-80 max-w-[85vw] rounded-xl border border-neutral-200 bg-white p-3 shadow-sm dark:border-neutral-800 dark:bg-black"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-semibold text-neutral-900 dark:text-white">Announcements</div>
+                    <button
+                      type="button"
+                      className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
+                      onClick={() => setAnnouncementsOpen(false)}
+                    >
+                      Close
+                    </button>
+                  </div>
+
+                  <div className="mt-3 max-h-80 overflow-auto">
+                    {announcementsStatus === "loading" ? (
+                      <div className="text-sm text-neutral-600 dark:text-neutral-400">Loading…</div>
+                    ) : null}
+                    {announcementsStatus === "error" ? (
+                      <div className="text-sm text-red-600 dark:text-red-400">{announcementsError}</div>
+                    ) : null}
+
+                    {announcementsStatus === "idle" ? (
+                      <div className="space-y-2">
+                        {announcements.map((a) => (
+                          <div
+                            key={a._id}
+                            className="rounded-lg border border-neutral-200 bg-white/70 p-3 dark:border-neutral-800 dark:bg-neutral-950/40"
+                          >
+                            <div className="text-sm font-medium text-neutral-900 dark:text-white">{a.title}</div>
+                            <div className="mt-1 max-h-16 overflow-hidden whitespace-pre-wrap text-sm text-neutral-700 dark:text-neutral-300">
+                              {a.message}
+                            </div>
+                            <div className="mt-2 text-xs text-neutral-500">{new Date(a.createdAt).toLocaleString()}</div>
+                          </div>
+                        ))}
+                        {announcements.length === 0 ? (
+                          <div className="text-sm text-neutral-600 dark:text-neutral-400">No announcements</div>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              ) : null}
 
               {user ? (
                 <>
@@ -230,6 +337,53 @@ export function Navbar() {
         </div>
       </div>
 
+      {announcementsOpen ? (
+        <div
+          ref={announcementsPopoverMobileRef}
+          className="fixed left-4 right-4 top-20 z-50 rounded-xl border border-neutral-200 bg-white p-3 shadow-sm dark:border-neutral-800 dark:bg-black sm:hidden"
+        >
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-semibold text-neutral-900 dark:text-white">Announcements</div>
+            <button
+              type="button"
+              className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
+              onClick={() => setAnnouncementsOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="mt-3 max-h-[60vh] overflow-auto">
+            {announcementsStatus === "loading" ? (
+              <div className="text-sm text-neutral-600 dark:text-neutral-400">Loading…</div>
+            ) : null}
+            {announcementsStatus === "error" ? (
+              <div className="text-sm text-red-600 dark:text-red-400">{announcementsError}</div>
+            ) : null}
+
+            {announcementsStatus === "idle" ? (
+              <div className="space-y-2">
+                {announcements.map((a) => (
+                  <div
+                    key={a._id}
+                    className="rounded-lg border border-neutral-200 bg-white/70 p-3 dark:border-neutral-800 dark:bg-neutral-950/40"
+                  >
+                    <div className="text-sm font-medium text-neutral-900 dark:text-white">{a.title}</div>
+                    <div className="mt-1 max-h-24 overflow-hidden whitespace-pre-wrap text-sm text-neutral-700 dark:text-neutral-300">
+                      {a.message}
+                    </div>
+                    <div className="mt-2 text-xs text-neutral-500">{new Date(a.createdAt).toLocaleString()}</div>
+                  </div>
+                ))}
+                {announcements.length === 0 ? (
+                  <div className="text-sm text-neutral-600 dark:text-neutral-400">No announcements</div>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+
       <nav
         id="mobile-nav"
         className={`${menuOpen ? "block" : "hidden"} border-t border-neutral-200 bg-white px-4 py-3 dark:border-neutral-800 dark:bg-black sm:hidden`}
@@ -241,9 +395,16 @@ export function Navbar() {
           <NavLink to="/products" className={navClass} onClick={() => setMenuOpen(false)}>
             Products
           </NavLink>
-          <NavLink to="/announcements" className={navClass} onClick={() => setMenuOpen(false)}>
-            Announcements
-          </NavLink>
+          <button
+            type="button"
+            className="text-left text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
+            onClick={() => {
+              setMenuOpen(false);
+              void openAnnouncements();
+            }}
+          >
+            Announcements{activeAnnouncementsCount ? ` (${activeAnnouncementsCount})` : ""}
+          </button>
           <NavLink to="/wishlist" className={navClass} onClick={() => setMenuOpen(false)}>
             Wishlist
           </NavLink>
