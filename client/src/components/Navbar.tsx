@@ -140,87 +140,92 @@ export function Navbar() {
           </button>
 
           <nav className="hidden items-center gap-5 sm:flex">
-            <NavLink to="/" end className={navClass}>
-              Home
-            </NavLink>
-            <NavLink to="/products" className={navClass}>
-              Products
-            </NavLink>
-            <NavLink to="/announcements" className={navClass}>
-              <span className="relative inline-flex items-center" aria-label="Announcements" title="Announcements">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-4 w-4"
-                >
-                  <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
-                  <path d="M13.73 21a2 2 0 01-3.46 0" />
-                </svg>
-                {activeAnnouncementsCount > 0 ? (
-                  <span className="absolute -right-2 -top-2 min-w-4 rounded-full bg-neutral-900 px-1 text-[10px] leading-4 text-white dark:bg-white dark:text-black">
-                    {activeAnnouncementsCount}
-                  </span>
-                ) : null}
-              </span>
-            </NavLink>
-            <NavLink to="/wishlist" className={navClass}>
-              Wishlist
-            </NavLink>
-            <NavLink to="/cart" className={navClass}>
-              Cart{cartCount ? ` (${cartCount})` : ""}
-            </NavLink>
-            <NavLink to="/track" className={navClass}>
-              Track
-            </NavLink>
-            <a
-              href={facebookUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
-            >
-              Facebook
-            </a>
+            <div className="flex items-center gap-5">
+              <NavLink to="/" end className={navClass}>
+                Home
+              </NavLink>
+              <NavLink to="/products" className={navClass}>
+                Products
+              </NavLink>
+              <NavLink to="/wishlist" className={navClass}>
+                Wishlist
+              </NavLink>
+              <NavLink to="/cart" className={navClass}>
+                Cart{cartCount ? ` (${cartCount})` : ""}
+              </NavLink>
+              <NavLink to="/track" className={navClass}>
+                Track
+              </NavLink>
+              <a
+                href={facebookUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
+              >
+                Facebook
+              </a>
+            </div>
 
-            {user ? (
-              <>
-                <NavLink to="/account/profile" className={navClass}>
-                  Profile
-                </NavLink>
-                {user.role !== "customer" && sessionMode === "admin" ? (
-                  <NavLink to="/admin" className={navClass}>
-                    Admin
+            <div className="ml-2 flex items-center gap-5 border-l border-neutral-200 pl-3 dark:border-neutral-800">
+              <NavLink to="/announcements" className={navClass}>
+                <span className="relative inline-flex items-center" aria-label="Announcements" title="Announcements">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-4 w-4"
+                  >
+                    <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
+                    <path d="M13.73 21a2 2 0 01-3.46 0" />
+                  </svg>
+                  {activeAnnouncementsCount > 0 ? (
+                    <span className="absolute -right-2 -top-2 min-w-4 rounded-full bg-neutral-900 px-1 text-[10px] leading-4 text-white dark:bg-white dark:text-black">
+                      {activeAnnouncementsCount}
+                    </span>
+                  ) : null}
+                </span>
+              </NavLink>
+
+              {user ? (
+                <>
+                  <NavLink to="/account/profile" className={navClass}>
+                    Profile
                   </NavLink>
-                ) : (
-                  <NavLink to="/account/orders" className={navClass}>
-                    Orders
+                  {user.role !== "customer" && sessionMode === "admin" ? (
+                    <NavLink to="/admin" className={navClass}>
+                      Admin
+                    </NavLink>
+                  ) : (
+                    <NavLink to="/account/orders" className={navClass}>
+                      Orders
+                    </NavLink>
+                  )}
+                  <button
+                    className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
+                    onClick={() => {
+                      dispatch(logout());
+                      dispatch(clearWishlist());
+                      navigate("/");
+                    }}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <NavLink to="/login" className={navClass}>
+                    Login
                   </NavLink>
-                )}
-                <button
-                  className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
-                  onClick={() => {
-                    dispatch(logout());
-                    dispatch(clearWishlist());
-                    navigate("/");
-                  }}
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <NavLink to="/login" className={navClass}>
-                  Login
-                </NavLink>
-                <NavLink to="/signup" className={navClass}>
-                  Signup
-                </NavLink>
-              </>
-            )}
+                  <NavLink to="/signup" className={navClass}>
+                    Signup
+                  </NavLink>
+                </>
+              )}
+            </div>
           </nav>
         </div>
       </div>
