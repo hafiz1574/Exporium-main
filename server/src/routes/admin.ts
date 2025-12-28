@@ -219,7 +219,7 @@ adminRouter.patch(
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) return res.status(400).json({ error: "Invalid id" });
 
-    const schema = z.object({ role: z.enum(["customer", "admin", "owner"]) });
+    const schema = z.object({ role: z.enum(["customer", "manager", "editor", "owner"]) });
     const parsed = schema.safeParse(req.body);
     if (!parsed.success) return res.status(400).json({ error: "Invalid input" });
 
@@ -227,7 +227,7 @@ adminRouter.patch(
 
     // Enforce only one owner.
     if (role === "owner") {
-      await User.updateMany({ role: "owner" }, { $set: { role: "admin" } });
+      await User.updateMany({ role: "owner" }, { $set: { role: "manager" } });
     }
 
     const updated = await User.findByIdAndUpdate(

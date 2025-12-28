@@ -147,6 +147,9 @@ export function Navbar() {
 
             {user ? (
               <>
+                <NavLink to="/account/profile" className={navClass}>
+                  Profile
+                </NavLink>
                 {user.role !== "customer" && sessionMode === "admin" ? (
                   <NavLink to="/admin" className={navClass}>
                     Admin
@@ -204,6 +207,9 @@ export function Navbar() {
 
           {user ? (
             <>
+              <NavLink to="/account/profile" className={navClass} onClick={() => setMenuOpen(false)}>
+                Profile
+              </NavLink>
               {user.role !== "customer" && sessionMode === "admin" ? (
                 <NavLink to="/admin" className={navClass} onClick={() => setMenuOpen(false)}>
                   Admin

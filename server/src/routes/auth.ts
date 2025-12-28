@@ -104,7 +104,7 @@ authRouter.post(
         .json({ error: "Email not verified", code: "EMAIL_NOT_VERIFIED", email: user.email });
     }
 
-    // Admin-mode login is only for admin/owner accounts.
+    // Admin-mode login is only for staff accounts (non-customer).
     if (sessionMode === "admin" && user.role === "customer") {
       return res.status(403).json({ error: "Forbidden", code: "NOT_ADMIN" });
     }

@@ -1,4 +1,4 @@
-export type UserRole = "customer" | "admin" | "owner";
+export type UserRole = "customer" | "manager" | "editor" | "admin" | "owner";
 
 export type SessionMode = "customer" | "admin";
 

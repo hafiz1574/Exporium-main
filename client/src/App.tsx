@@ -18,6 +18,7 @@ import { ResetPassword } from "./pages/ResetPassword";
 import { Wishlist } from "./pages/Wishlist";
 import { AccountOrderDetails } from "./pages/account/OrderDetails";
 import { AccountOrders } from "./pages/account/Orders";
+import { AccountProfile } from "./pages/account/Profile";
 import { AdminCustomers } from "./pages/admin/CustomersAdmin";
 import { AdminDashboard } from "./pages/admin/Dashboard";
 import { AdminOrders } from "./pages/admin/OrdersAdmin";
@@ -56,15 +57,19 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route element={<ProtectedRoute />}>
+          <Route path="/account/profile" element={<AccountProfile />} />
           <Route path="/account/orders" element={<AccountOrders />} />
           <Route path="/account/orders/:id" element={<AccountOrderDetails />} />
         </Route>
 
-        <Route element={<ProtectedRoute roles={["admin", "owner"]} requireAdminMode />}>
+        <Route element={<ProtectedRoute roles={["admin", "owner", "manager", "editor"]} requireAdminMode />}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/customers" element={<AdminCustomers />} />
+        </Route>
+
+        <Route element={<ProtectedRoute roles={["admin", "owner"]} requireAdminMode />}>
           <Route path="/admin/users" element={<AdminUsers />} />
         </Route>
 

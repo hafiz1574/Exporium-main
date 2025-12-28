@@ -24,7 +24,7 @@ export function AdminUsers() {
   const canManage = user?.role === "owner" || user?.role === "admin";
 
   const roleOptions = useMemo(() => {
-    const roles: UserRole[] = ["customer", "admin", "owner"];
+    const roles: UserRole[] = ["customer", "manager", "editor", "owner"];
     return roles;
   }, []);
 
