@@ -69,7 +69,7 @@ export default function App() {
           <Route path="/admin/customers" element={<AdminCustomers />} />
         </Route>
 
-        <Route element={<ProtectedRoute roles={["admin", "owner"]} requireAdminMode />}>
+        <Route element={<ProtectedRoute roles={["owner"]} requireAdminMode />}>
           <Route path="/admin/users" element={<AdminUsers />} />
         </Route>
 
