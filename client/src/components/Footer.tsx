@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export function Footer() {
   const facebookUrl = "https://www.facebook.com/profile.php?id=61583223486613";
 
@@ -17,6 +19,12 @@ export function Footer() {
             </a>
           </div>
           <div>© {new Date().getFullYear()} Exporium</div>
+        </div>
+
+        <div className="mt-3">
+          <Link to="/employees" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white">
+            Employes
+          </Link>
         </div>
       </div>
     </footer>

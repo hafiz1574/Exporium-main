@@ -38,6 +38,11 @@ export function AdminDashboard() {
               Users
             </Link>
           ) : null}
+          {user?.role === "owner" ? (
+            <Link to="/admin/announcements" className="text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white">
+              Announcements
+            </Link>
+          ) : null}
         </div>
       </div>
 

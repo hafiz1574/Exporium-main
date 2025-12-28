@@ -16,11 +16,14 @@ import { VerifyEmailSent } from "./pages/VerifyEmailSent";
 import { ForgotPassword } from "./pages/ForgotPassword";
 import { ResetPassword } from "./pages/ResetPassword";
 import { Wishlist } from "./pages/Wishlist";
+import { Employees } from "./pages/Employees";
+import { Announcements } from "./pages/Announcements";
 import { AccountOrderDetails } from "./pages/account/OrderDetails";
 import { AccountOrders } from "./pages/account/Orders";
 import { AccountProfile } from "./pages/account/Profile";
 import { AdminCustomers } from "./pages/admin/CustomersAdmin";
 import { AdminDashboard } from "./pages/admin/Dashboard";
+import { AdminAnnouncements } from "./pages/admin/AnnouncementsAdmin";
 import { AdminOrders } from "./pages/admin/OrdersAdmin";
 import { AdminProducts } from "./pages/admin/ProductsAdmin";
 import { AdminUsers } from "./pages/admin/UsersAdmin";
@@ -55,6 +58,8 @@ export default function App() {
         <Route path="/verify-email/sent" element={<VerifyEmailSent />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/employees" element={<Employees />} />
+        <Route path="/announcements" element={<Announcements />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/account/profile" element={<AccountProfile />} />
@@ -71,6 +76,7 @@ export default function App() {
 
         <Route element={<ProtectedRoute roles={["owner"]} requireAdminMode />}>
           <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/announcements" element={<AdminAnnouncements />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

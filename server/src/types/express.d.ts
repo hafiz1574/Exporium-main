@@ -5,6 +5,7 @@ declare global {
     interface Request {
       user?: Pick<IUser, "_id" | "email" | "role" | "name" | "emailVerified"> & {
         sessionMode?: "customer" | "admin";
+        nameColor?: string;
       };
     }
   }

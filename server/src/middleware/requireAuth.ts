@@ -21,7 +21,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
 
   try {
     const decoded = jwt.verify(token, secret) as JwtPayload;
-    const user = await User.findById(decoded.userId).select("_id name email role emailVerified");
+    const user = await User.findById(decoded.userId).select("_id name email role nameColor emailVerified");
     if (!user) return res.status(401).json({ error: "Unauthorized" });
 
     req.user = {
@@ -29,6 +29,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
       name: user.name,
       email: user.email,
       role: user.role,
+      nameColor: (user as any).nameColor,
       emailVerified: user.emailVerified,
       sessionMode: decoded.sessionMode ?? "customer"
     };

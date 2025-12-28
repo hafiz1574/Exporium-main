@@ -118,6 +118,7 @@ authRouter.post(
         name: user.name,
         email: user.email,
         role: user.role,
+        nameColor: (user as any).nameColor,
         emailVerified: user.emailVerified
       }
     });

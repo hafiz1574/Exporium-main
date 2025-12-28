@@ -127,6 +127,23 @@ export function Navbar() {
             <NavLink to="/products" className={navClass}>
               Products
             </NavLink>
+            <NavLink to="/announcements" className={navClass}>
+              <span className="inline-flex items-center" aria-label="Announcements" title="Announcements">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                >
+                  <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
+                  <path d="M13.73 21a2 2 0 01-3.46 0" />
+                </svg>
+              </span>
+            </NavLink>
             <NavLink to="/wishlist" className={navClass}>
               Wishlist
             </NavLink>
@@ -194,6 +211,9 @@ export function Navbar() {
           </NavLink>
           <NavLink to="/products" className={navClass} onClick={() => setMenuOpen(false)}>
             Products
+          </NavLink>
+          <NavLink to="/announcements" className={navClass} onClick={() => setMenuOpen(false)}>
+            Announcements
           </NavLink>
           <NavLink to="/wishlist" className={navClass} onClick={() => setMenuOpen(false)}>
             Wishlist

@@ -8,6 +8,8 @@ import { wishlistRouter } from "./routes/wishlist";
 import { ordersRouter } from "./routes/orders";
 import { adminRouter } from "./routes/admin";
 import { trackingRouter } from "./routes/tracking";
+import { employeesRouter } from "./routes/employees";
+import { announcementsRouter } from "./routes/announcements";
 
 export const app = express();
 
@@ -54,6 +56,8 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/products", productsRouter);
+app.use("/api/employees", employeesRouter);
+app.use("/api/announcements", announcementsRouter);
 app.use("/api/wishlist", wishlistRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/admin", adminRouter);

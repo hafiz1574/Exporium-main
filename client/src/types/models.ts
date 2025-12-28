@@ -7,6 +7,7 @@ export type User = {
   name: string;
   email: string;
   role: UserRole;
+  nameColor?: string;
   emailVerified?: boolean;
 };
 

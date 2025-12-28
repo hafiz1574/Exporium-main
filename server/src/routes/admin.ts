@@ -11,10 +11,24 @@ import { Product } from "../models/Product";
 import { Order, ORDER_STATUSES } from "../models/Order";
 import { TrackingEvent } from "../models/TrackingEvent";
 import { User } from "../models/User";
+import { Announcement } from "../models/Announcement";
 import { asyncHandler } from "../utils/asyncHandler";
 import { getCloudinary } from "../lib/cloudinary";
 
 export const adminRouter = Router();
+
+const ALLOWED_NAME_COLORS = [
+  "text-cyan-400",
+  "text-fuchsia-400",
+  "text-lime-400",
+  "text-yellow-300",
+  "text-emerald-400",
+  "text-sky-400",
+  "text-violet-400",
+  "text-rose-400",
+  "text-orange-300",
+  "text-white"
+] as const;
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
@@ -102,6 +116,65 @@ adminRouter.delete(
     const deleted = await Product.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ error: "Not found" });
 
+    res.json({ ok: true });
+  })
+);
+
+adminRouter.get(
+  "/announcements",
+  requireAuth,
+  requireOwner,
+  asyncHandler(async (_req, res) => {
+    const announcements = await Announcement.find().sort({ createdAt: -1 }).limit(200);
+    res.json({ announcements });
+  })
+);
+
+adminRouter.post(
+  "/announcements",
+  requireAuth,
+  requireOwner,
+  asyncHandler(async (req, res) => {
+    const schema = z.object({ title: z.string().min(1).max(120), message: z.string().min(1).max(2000), active: z.boolean().optional() });
+    const parsed = schema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "Invalid input" });
+
+    const created = await Announcement.create({
+      title: parsed.data.title,
+      message: parsed.data.message,
+      active: parsed.data.active ?? true
+    });
+    res.status(201).json({ announcement: created });
+  })
+);
+
+adminRouter.patch(
+  "/announcements/:id",
+  requireAuth,
+  requireOwner,
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) return res.status(400).json({ error: "Invalid id" });
+
+    const schema = z.object({ title: z.string().min(1).max(120).optional(), message: z.string().min(1).max(2000).optional(), active: z.boolean().optional() });
+    const parsed = schema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "Invalid input" });
+
+    const updated = await Announcement.findByIdAndUpdate(id, { $set: parsed.data }, { new: true });
+    if (!updated) return res.status(404).json({ error: "Not found" });
+    res.json({ announcement: updated });
+  })
+);
+
+adminRouter.delete(
+  "/announcements/:id",
+  requireAuth,
+  requireOwner,
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) return res.status(400).json({ error: "Invalid id" });
+    const deleted = await Announcement.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ error: "Not found" });
     res.json({ ok: true });
   })
 );
@@ -203,7 +276,7 @@ adminRouter.get(
   requireOwner,
   asyncHandler(async (_req, res) => {
     const users = await User.find()
-      .select("_id name email role emailVerified createdAt")
+      .select("_id name email role nameColor emailVerified createdAt")
       .sort({ createdAt: -1 })
       .limit(1000);
     res.json({ users });
@@ -232,7 +305,35 @@ adminRouter.patch(
     const updated = await User.findByIdAndUpdate(
       id,
       { $set: { role } },
-      { new: true, select: "_id name email role emailVerified createdAt" }
+      { new: true, select: "_id name email role nameColor emailVerified createdAt" }
+    );
+
+    if (!updated) return res.status(404).json({ error: "Not found" });
+    res.json({ user: updated });
+  })
+);
+
+adminRouter.patch(
+  "/users/:id/name-color",
+  requireAuth,
+  requireOwner,
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) return res.status(400).json({ error: "Invalid id" });
+
+    const schema = z.object({ nameColor: z.string().optional().nullable() });
+    const parsed = schema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "Invalid input" });
+
+    const nameColor = (parsed.data.nameColor ?? "").trim();
+    if (nameColor && !ALLOWED_NAME_COLORS.includes(nameColor as any)) {
+      return res.status(400).json({ error: "Invalid color" });
+    }
+
+    const updated = await User.findByIdAndUpdate(
+      id,
+      { $set: { nameColor: nameColor || undefined } },
+      { new: true, select: "_id name email role nameColor emailVerified createdAt" }
     );
 
     if (!updated) return res.status(404).json({ error: "Not found" });
