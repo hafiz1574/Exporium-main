@@ -27,6 +27,7 @@ const emptyForm: FormState = {
 export function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [listError, setListError] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [files, setFiles] = useState<FileList | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -34,9 +35,13 @@ export function AdminProducts() {
 
   async function loadProducts() {
     setLoading(true);
+    setListError(null);
     try {
       const { data } = await api.get("/api/products", { params: { sort: "newest" } });
       setProducts(data.products as Product[]);
+    } catch (err) {
+      setProducts([]);
+      setListError(getApiErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -305,10 +310,14 @@ export function AdminProducts() {
 
         <div>
           <div className="mb-3 text-sm font-medium text-neutral-900 dark:text-white">All products</div>
+          {listError ? <div className="mb-3 text-sm text-red-600 dark:text-red-400">{listError}</div> : null}
           {loading ? (
             <div className="text-sm text-neutral-600 dark:text-neutral-400">Loading…</div>
           ) : (
             <div className="space-y-3">
+              {!listError && products.length === 0 ? (
+                <div className="text-sm text-neutral-600 dark:text-neutral-400">No products yet.</div>
+              ) : null}
               {products.map((p) => (
                 <div
                   key={p._id}
