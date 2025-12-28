@@ -7,7 +7,6 @@ import { z } from "zod";
 import { requireAuth } from "../middleware/requireAuth";
 import { requireAdmin } from "../middleware/requireAdmin";
 import { requireOwner } from "../middleware/requireOwner";
-import { requireOwnerOrBootstrap } from "../middleware/requireOwnerOrBootstrap";
 import { Product } from "../models/Product";
 import { Order, ORDER_STATUSES } from "../models/Order";
 import { TrackingEvent } from "../models/TrackingEvent";
@@ -201,7 +200,7 @@ adminRouter.get(
 adminRouter.get(
   "/users",
   requireAuth,
-  requireOwnerOrBootstrap,
+  requireOwner,
   asyncHandler(async (_req, res) => {
     const users = await User.find()
       .select("_id name email role emailVerified createdAt")
@@ -214,7 +213,7 @@ adminRouter.get(
 adminRouter.patch(
   "/users/:id/role",
   requireAuth,
-  requireOwnerOrBootstrap,
+  requireOwner,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) return res.status(400).json({ error: "Invalid id" });
@@ -244,7 +243,7 @@ adminRouter.patch(
 adminRouter.delete(
   "/users/:id",
   requireAuth,
-  requireOwnerOrBootstrap,
+  requireOwner,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) return res.status(400).json({ error: "Invalid id" });
